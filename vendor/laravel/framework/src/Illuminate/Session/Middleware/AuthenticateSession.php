@@ -35,7 +35,7 @@ class AuthenticateSession
      */
     public function handle($request, Closure $next)
     {
-        if (! $request->hasSession() || ! $request->user()) {
+        if (! $request->user() || ! $request->session()) {
             return $next($request);
         }
 

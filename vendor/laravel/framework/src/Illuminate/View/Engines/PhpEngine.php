@@ -2,7 +2,9 @@
 
 namespace Illuminate\View\Engines;
 
+use Exception;
 use Illuminate\Contracts\View\Engine;
+use Symfony\Component\Debug\Exception\FatalThrowableError;
 use Throwable;
 
 class PhpEngine implements Engine
@@ -11,7 +13,7 @@ class PhpEngine implements Engine
      * Get the evaluated contents of the view.
      *
      * @param  string  $path
-     * @param  array  $data
+     * @param  array   $data
      * @return string
      */
     public function get($path, array $data = [])
@@ -23,7 +25,7 @@ class PhpEngine implements Engine
      * Get the evaluated contents of the view at the given path.
      *
      * @param  string  $__path
-     * @param  array  $__data
+     * @param  array   $__data
      * @return string
      */
     protected function evaluatePath($__path, $__data)
@@ -39,8 +41,10 @@ class PhpEngine implements Engine
         // an exception is thrown. This prevents any partial views from leaking.
         try {
             include $__path;
-        } catch (Throwable $e) {
+        } catch (Exception $e) {
             $this->handleViewException($e, $obLevel);
+        } catch (Throwable $e) {
+            $this->handleViewException(new FatalThrowableError($e), $obLevel);
         }
 
         return ltrim(ob_get_clean());
@@ -49,13 +53,13 @@ class PhpEngine implements Engine
     /**
      * Handle a view exception.
      *
-     * @param  \Throwable  $e
+     * @param  \Exception  $e
      * @param  int  $obLevel
      * @return void
      *
-     * @throws \Throwable
+     * @throws \Exception
      */
-    protected function handleViewException(Throwable $e, $obLevel)
+    protected function handleViewException(Exception $e, $obLevel)
     {
         while (ob_get_level() > $obLevel) {
             ob_end_clean();

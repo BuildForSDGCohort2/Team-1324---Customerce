@@ -8,6 +8,3 @@ f"{name + 5}"
 rf"{name}"
 fr"{name}"
 f"{name + f'{name}'}"
-f"{{ }}"
-if"text"=="text":
-    "good"

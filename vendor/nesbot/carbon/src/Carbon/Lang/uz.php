@@ -8,6 +8,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+\Symfony\Component\Translation\PluralizationRules::set(function ($number) {
+    return $number === 1 ? 0 : 1;
+}, 'uz');
 
 /*
  * Authors:
@@ -23,39 +26,34 @@
  * - Max Melentiev
  * - Juanito Fatas
  * - Alisher Ulugbekov
- * - Ergashev Adizbek
  */
 return [
     'year' => ':count йил',
-    'a_year' => '{1}бир йил|:count йил',
+    'a_year' => 'бир йил|:count йил',
     'y' => ':count й',
     'month' => ':count ой',
-    'a_month' => '{1}бир ой|:count ой',
+    'a_month' => 'бир ой|:count ой',
     'm' => ':count о',
     'week' => ':count ҳафта',
-    'a_week' => '{1}бир ҳафта|:count ҳафта',
+    'a_week' => 'бир ҳафта|:count ҳафта',
     'w' => ':count ҳ',
     'day' => ':count кун',
-    'a_day' => '{1}бир кун|:count кун',
+    'a_day' => 'бир кун|:count кун',
     'd' => ':count к',
     'hour' => ':count соат',
-    'a_hour' => '{1}бир соат|:count соат',
+    'a_hour' => 'бир соат|:count соат',
     'h' => ':count с',
-    'minute' => ':count дақиқа',
-    'a_minute' => '{1}бир дақиқа|:count дақиқа',
+    'minute' => ':count дакика',
+    'a_minute' => 'бир дакика|:count дакика',
     'min' => ':count д',
-    'second' => ':count сония',
-    'a_second' => '{1}сония|:count сония',
-    's' => ':count с',
-    'ago' => ':time аввал',
+    'second' => ':count фурсат',
+    'a_second' => 'фурсат|:count фурсат',
+    's' => ':count ф',
+    'ago' => 'Бир неча :time олдин',
     'from_now' => 'Якин :time ичида',
-    'after' => ':timeдан кейин',
-    'before' => ':time олдин',
-    'diff_now' => 'ҳозир',
-    'diff_today' => 'Бугун',
-    'diff_today_regexp' => 'Бугун(?:\\s+соат)?',
+    'after' => ':time пас аз он',
+    'before' => ':time пеш аз он',
     'diff_yesterday' => 'Кеча',
-    'diff_yesterday_regexp' => 'Кеча(?:\\s+соат)?',
     'diff_tomorrow' => 'Эртага',
     'formats' => [
         'LT' => 'HH:mm',
@@ -80,6 +78,6 @@ return [
     'weekdays_min' => ['як', 'ду', 'се', 'чо', 'па', 'жу', 'ша'],
     'first_day_of_week' => 1,
     'day_of_first_week_of_year' => 1,
-    'meridiem' => ['эрталаб', 'кечаси'],
-    'list' => [', ', ' ва '],
+    'meridiem' => ['ertalab', 'kechasi'],
+    'list' => [', ', ' va '],
 ];

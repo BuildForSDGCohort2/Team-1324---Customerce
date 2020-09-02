@@ -58,9 +58,11 @@ class ChoiceQuestion extends Question
      *
      * When multiselect is set to true, multiple choices can be answered.
      *
+     * @param bool $multiselect
+     *
      * @return $this
      */
-    public function setMultiselect(bool $multiselect)
+    public function setMultiselect($multiselect)
     {
         $this->multiselect = $multiselect;
         $this->setValidator($this->getDefaultValidator());
@@ -91,9 +93,11 @@ class ChoiceQuestion extends Question
     /**
      * Sets the prompt for choices.
      *
+     * @param string $prompt
+     *
      * @return $this
      */
-    public function setPrompt(string $prompt)
+    public function setPrompt($prompt)
     {
         $this->prompt = $prompt;
 
@@ -105,9 +109,11 @@ class ChoiceQuestion extends Question
      *
      * The error message has a string placeholder (%s) for the invalid value.
      *
+     * @param string $errorMessage
+     *
      * @return $this
      */
-    public function setErrorMessage(string $errorMessage)
+    public function setErrorMessage($errorMessage)
     {
         $this->errorMessage = $errorMessage;
         $this->setValidator($this->getDefaultValidator());
@@ -129,15 +135,9 @@ class ChoiceQuestion extends Question
                     throw new InvalidArgumentException(sprintf($errorMessage, $selected));
                 }
 
-                $selectedChoices = explode(',', $selected);
+                $selectedChoices = array_map('trim', explode(',', $selected));
             } else {
-                $selectedChoices = [$selected];
-            }
-
-            if ($this->isTrimmable()) {
-                foreach ($selectedChoices as $k => $v) {
-                    $selectedChoices[$k] = trim($v);
-                }
+                $selectedChoices = [trim($selected)];
             }
 
             $multiselectChoices = [];
@@ -150,7 +150,7 @@ class ChoiceQuestion extends Question
                 }
 
                 if (\count($results) > 1) {
-                    throw new InvalidArgumentException(sprintf('The provided answer is ambiguous. Value should be one of "%s".', implode('" or "', $results)));
+                    throw new InvalidArgumentException(sprintf('The provided answer is ambiguous. Value should be one of %s.', implode(' or ', $results)));
                 }
 
                 $result = array_search($value, $choices);

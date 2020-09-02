@@ -31,13 +31,7 @@ abstract class Facade
      */
     public static function resolved(Closure $callback)
     {
-        $accessor = static::getFacadeAccessor();
-
-        if (static::$app->resolved($accessor) === true) {
-            $callback(static::getFacadeRoot());
-        }
-
-        static::$app->afterResolving($accessor, function ($service) use ($callback) {
+        static::$app->afterResolving(static::getFacadeAccessor(), function ($service) use ($callback) {
             $callback($service);
         });
     }
@@ -56,22 +50,6 @@ abstract class Facade
                 static::swap($spy);
             });
         }
-    }
-
-    /**
-     * Initiate a partial mock on the facade.
-     *
-     * @return \Mockery\MockInterface
-     */
-    public static function partialMock()
-    {
-        $name = static::getFacadeAccessor();
-
-        $mock = static::isMock()
-            ? static::$resolvedInstance[$name]
-            : static::createFreshMockInstance();
-
-        return $mock->makePartial();
     }
 
     /**
@@ -245,7 +223,7 @@ abstract class Facade
      * Handle dynamic, static calls to the object.
      *
      * @param  string  $method
-     * @param  array  $args
+     * @param  array   $args
      * @return mixed
      *
      * @throws \RuntimeException

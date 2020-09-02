@@ -9,12 +9,11 @@
  * file that was distributed with this source code.
  */
 
-/*
+/**
  * Authors:
  * - Josh Soref
  * - François B
  * - JD Isaacks
- * - Satheez
  */
 return [
     'year' => ':count வருடம்|:count ஆண்டுகள்',
@@ -40,10 +39,6 @@ return [
     's' => ':count விநா.',
     'ago' => ':time முன்',
     'from_now' => ':time இல்',
-    'before' => ':time முன்',
-    'after' => ':time பின்',
-    'diff_now' => 'இப்போது',
-    'diff_today' => 'இன்று',
     'diff_yesterday' => 'நேற்று',
     'diff_tomorrow' => 'நாளை',
     'formats' => [

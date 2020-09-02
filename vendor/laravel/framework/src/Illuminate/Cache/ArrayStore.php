@@ -24,24 +24,6 @@ class ArrayStore extends TaggableStore implements LockProvider
     public $locks = [];
 
     /**
-     * Indicates if values are serialized within the store.
-     *
-     * @var bool
-     */
-    protected $serializesValues;
-
-    /**
-     * Create a new Array store.
-     *
-     * @param  bool  $serializesValues
-     * @return void
-     */
-    public function __construct($serializesValues = false)
-    {
-        $this->serializesValues = $serializesValues;
-    }
-
-    /**
      * Retrieve an item from the cache by key.
      *
      * @param  string|array  $key
@@ -63,21 +45,21 @@ class ArrayStore extends TaggableStore implements LockProvider
             return;
         }
 
-        return $this->serializesValues ? unserialize($item['value']) : $item['value'];
+        return $item['value'];
     }
 
     /**
      * Store an item in the cache for a given number of seconds.
      *
      * @param  string  $key
-     * @param  mixed  $value
+     * @param  mixed   $value
      * @param  int  $seconds
      * @return bool
      */
     public function put($key, $value, $seconds)
     {
         $this->storage[$key] = [
-            'value' => $this->serializesValues ? serialize($value) : $value,
+            'value' => $value,
             'expiresAt' => $this->calculateExpiration($seconds),
         ];
 
@@ -88,29 +70,27 @@ class ArrayStore extends TaggableStore implements LockProvider
      * Increment the value of an item in the cache.
      *
      * @param  string  $key
-     * @param  mixed  $value
+     * @param  mixed   $value
      * @return int
      */
     public function increment($key, $value = 1)
     {
-        if (! is_null($existing = $this->get($key))) {
-            return tap(((int) $existing) + $value, function ($incremented) use ($key) {
-                $value = $this->serializesValues ? serialize($incremented) : $incremented;
+        if (! isset($this->storage[$key])) {
+            $this->forever($key, $value);
 
-                $this->storage[$key]['value'] = $value;
-            });
+            return $this->storage[$key]['value'];
         }
 
-        $this->forever($key, $value);
+        $this->storage[$key]['value'] = ((int) $this->storage[$key]['value']) + $value;
 
-        return $value;
+        return $this->storage[$key]['value'];
     }
 
     /**
      * Decrement the value of an item in the cache.
      *
      * @param  string  $key
-     * @param  mixed  $value
+     * @param  mixed   $value
      * @return int
      */
     public function decrement($key, $value = 1)
@@ -122,7 +102,7 @@ class ArrayStore extends TaggableStore implements LockProvider
      * Store an item in the cache indefinitely.
      *
      * @param  string  $key
-     * @param  mixed  $value
+     * @param  mixed   $value
      * @return bool
      */
     public function forever($key, $value)
@@ -194,9 +174,9 @@ class ArrayStore extends TaggableStore implements LockProvider
     /**
      * Get a lock instance.
      *
-     * @param  string  $name
-     * @param  int  $seconds
-     * @param  string|null  $owner
+     * @param  string $name
+     * @param  int $seconds
+     * @param  string|null $owner
      * @return \Illuminate\Contracts\Cache\Lock
      */
     public function lock($name, $seconds = 0, $owner = null)

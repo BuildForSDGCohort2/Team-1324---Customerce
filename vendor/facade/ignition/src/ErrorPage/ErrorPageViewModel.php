@@ -4,15 +4,15 @@ namespace Facade\Ignition\ErrorPage;
 
 use Closure;
 use Exception;
-use Facade\FlareClient\Report;
-use Facade\Ignition\Ignition;
-use Facade\Ignition\IgnitionConfig;
-use Facade\Ignition\Solutions\SolutionTransformer;
-use Illuminate\Contracts\Support\Arrayable;
-use Laravel\Telescope\Http\Controllers\HomeController;
-use Laravel\Telescope\IncomingExceptionEntry;
-use Laravel\Telescope\Telescope;
 use Throwable;
+use Facade\Ignition\Ignition;
+use Facade\FlareClient\Report;
+use Laravel\Telescope\Telescope;
+use Facade\Ignition\IgnitionConfig;
+use Illuminate\Contracts\Support\Arrayable;
+use Laravel\Telescope\IncomingExceptionEntry;
+use Facade\Ignition\Solutions\SolutionTransformer;
+use Laravel\Telescope\Http\Controllers\HomeController;
 
 class ErrorPageViewModel implements Arrayable
 {
@@ -51,7 +51,7 @@ class ErrorPageViewModel implements Arrayable
             return '';
         }
 
-        $throwableString = sprintf(
+        return sprintf(
             "%s: %s in file %s on line %d\n\n%s\n",
             get_class($this->throwable),
             $this->throwable->getMessage(),
@@ -59,8 +59,6 @@ class ErrorPageViewModel implements Arrayable
             $this->throwable->getLine(),
             $this->report->getThrowable()->getTraceAsString()
         );
-
-        return htmlspecialchars($throwableString);
     }
 
     public function telescopeUrl(): ?string
@@ -92,9 +90,7 @@ class ErrorPageViewModel implements Arrayable
 
     public function title(): string
     {
-        $message = htmlspecialchars($this->report->getMessage());
-
-        return "🧨 {$message}";
+        return "🧨 {$this->report->getMessage()}";
     }
 
     public function config(): array
@@ -113,14 +109,10 @@ class ErrorPageViewModel implements Arrayable
         return $solutions;
     }
 
-    protected function shareEndpoint(): string
+    protected function shareEndpoint()
     {
-        try {
-            // use string notation as L5.5 and L5.6 don't support array notation yet
-            return action('\Facade\Ignition\Http\Controllers\ShareReportController');
-        } catch (Exception $exception) {
-            return '';
-        }
+        // use string notation as L5.5 and L5.6 don't support array notation yet
+        return action('\Facade\Ignition\Http\Controllers\ShareReportController');
     }
 
     public function report(): array
@@ -130,9 +122,13 @@ class ErrorPageViewModel implements Arrayable
 
     public function jsonEncode($data): string
     {
-        $jsonOptions = JSON_PARTIAL_OUTPUT_ON_ERROR | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT;
+        $jsonOptions = JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT;
 
-        return json_encode($data, $jsonOptions);
+        if (version_compare(phpversion(), '7.2', '>=')) {
+            return json_encode($data, JSON_PARTIAL_OUTPUT_ON_ERROR | $jsonOptions);
+        }
+
+        return json_encode($data, JSON_PARTIAL_OUTPUT_ON_ERROR | $jsonOptions);
     }
 
     public function getAssetContents(string $asset): string

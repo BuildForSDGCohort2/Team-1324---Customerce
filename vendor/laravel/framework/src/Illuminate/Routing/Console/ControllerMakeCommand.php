@@ -57,20 +57,7 @@ class ControllerMakeCommand extends GeneratorCommand
 
         $stub = $stub ?? '/stubs/controller.plain.stub';
 
-        return $this->resolveStubPath($stub);
-    }
-
-    /**
-     * Resolve the fully-qualified path to the stub.
-     *
-     * @param  string  $stub
-     * @return string
-     */
-    protected function resolveStubPath($stub)
-    {
-        return file_exists($customPath = $this->laravel->basePath(trim($stub, '/')))
-                        ? $customPath
-                        : __DIR__.$stub;
+        return __DIR__.$stub;
     }
 
     /**
@@ -130,14 +117,8 @@ class ControllerMakeCommand extends GeneratorCommand
 
         return [
             'ParentDummyFullModelClass' => $parentModelClass,
-            '{{ namespacedParentModel }}' => $parentModelClass,
-            '{{namespacedParentModel}}' => $parentModelClass,
             'ParentDummyModelClass' => class_basename($parentModelClass),
-            '{{ parentModel }}' => class_basename($parentModelClass),
-            '{{parentModel}}' => class_basename($parentModelClass),
             'ParentDummyModelVariable' => lcfirst(class_basename($parentModelClass)),
-            '{{ parentModelVariable }}' => lcfirst(class_basename($parentModelClass)),
-            '{{parentModelVariable}}' => lcfirst(class_basename($parentModelClass)),
         ];
     }
 
@@ -159,14 +140,8 @@ class ControllerMakeCommand extends GeneratorCommand
 
         return array_merge($replace, [
             'DummyFullModelClass' => $modelClass,
-            '{{ namespacedModel }}' => $modelClass,
-            '{{namespacedModel}}' => $modelClass,
             'DummyModelClass' => class_basename($modelClass),
-            '{{ model }}' => class_basename($modelClass),
-            '{{model}}' => class_basename($modelClass),
             'DummyModelVariable' => lcfirst(class_basename($modelClass)),
-            '{{ modelVariable }}' => lcfirst(class_basename($modelClass)),
-            '{{modelVariable}}' => lcfirst(class_basename($modelClass)),
         ]);
     }
 
@@ -201,12 +176,11 @@ class ControllerMakeCommand extends GeneratorCommand
     protected function getOptions()
     {
         return [
-            ['api', null, InputOption::VALUE_NONE, 'Exclude the create and edit methods from the controller.'],
-            ['force', null, InputOption::VALUE_NONE, 'Create the class even if the controller already exists'],
-            ['invokable', 'i', InputOption::VALUE_NONE, 'Generate a single method, invokable controller class.'],
             ['model', 'm', InputOption::VALUE_OPTIONAL, 'Generate a resource controller for the given model.'],
-            ['parent', 'p', InputOption::VALUE_OPTIONAL, 'Generate a nested resource controller class.'],
             ['resource', 'r', InputOption::VALUE_NONE, 'Generate a resource controller class.'],
+            ['invokable', 'i', InputOption::VALUE_NONE, 'Generate a single method, invokable controller class.'],
+            ['parent', 'p', InputOption::VALUE_OPTIONAL, 'Generate a nested resource controller class.'],
+            ['api', null, InputOption::VALUE_NONE, 'Exclude the create and edit methods from the controller.'],
         ];
     }
 }

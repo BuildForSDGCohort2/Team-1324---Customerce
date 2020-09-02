@@ -94,7 +94,7 @@ class MongoDBFormatter implements FormatterInterface
         $formattedException = [
             'class' => Utils::getClass($exception),
             'message' => $exception->getMessage(),
-            'code' => (int) $exception->getCode(),
+            'code' => $exception->getCode(),
             'file' => $exception->getFile() . ':' . $exception->getLine(),
         ];
 

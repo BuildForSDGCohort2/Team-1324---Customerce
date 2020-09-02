@@ -2,16 +2,16 @@
 
 namespace Facade\Ignition\SolutionProviders;
 
-use BadMethodCallException;
-use Facade\Ignition\Support\StringComparator;
-use Facade\IgnitionContracts\BaseSolution;
-use Facade\IgnitionContracts\HasSolutionsForThrowable;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
-use Illuminate\Validation\Validator;
+use Throwable;
 use ReflectionClass;
 use ReflectionMethod;
-use Throwable;
+use BadMethodCallException;
+use Illuminate\Support\Str;
+use Illuminate\Support\Collection;
+use Illuminate\Validation\Validator;
+use Facade\IgnitionContracts\BaseSolution;
+use Facade\Ignition\Support\StringComparator;
+use Facade\IgnitionContracts\HasSolutionsForThrowable;
 
 class UnknownValidationSolutionProvider implements HasSolutionsForThrowable
 {

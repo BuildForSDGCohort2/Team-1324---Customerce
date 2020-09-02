@@ -17,11 +17,6 @@ use Symfony\Component\HttpFoundation\Session\Storage\Handler\StrictSessionHandle
 use Symfony\Component\HttpFoundation\Session\Storage\Proxy\AbstractProxy;
 use Symfony\Component\HttpFoundation\Session\Storage\Proxy\SessionHandlerProxy;
 
-// Help opcache.preload discover always-needed symbols
-class_exists(MetadataBag::class);
-class_exists(StrictSessionHandler::class);
-class_exists(SessionHandlerProxy::class);
-
 /**
  * This provides a base class for session attribute storage.
  *
@@ -102,7 +97,9 @@ class NativeSessionStorage implements SessionStorageInterface
      * trans_sid_hosts, $_SERVER['HTTP_HOST']
      * trans_sid_tags, "a=href,area=href,frame=src,form="
      *
-     * @param AbstractProxy|\SessionHandlerInterface|null $handler
+     * @param array                         $options Session configuration options
+     * @param \SessionHandlerInterface|null $handler
+     * @param MetadataBag                   $metaBag MetadataBag
      */
     public function __construct(array $options = [], $handler = null, MetadataBag $metaBag = null)
     {
@@ -144,7 +141,7 @@ class NativeSessionStorage implements SessionStorageInterface
             return true;
         }
 
-        if (PHP_SESSION_ACTIVE === session_status()) {
+        if (\PHP_SESSION_ACTIVE === session_status()) {
             throw new \RuntimeException('Failed to start the session: already started by PHP.');
         }
 
@@ -154,7 +151,7 @@ class NativeSessionStorage implements SessionStorageInterface
 
         // ok to try and start the session
         if (!session_start()) {
-            throw new \RuntimeException('Failed to start the session.');
+            throw new \RuntimeException('Failed to start the session');
         }
 
         if (null !== $this->emulateSameSite) {
@@ -180,7 +177,7 @@ class NativeSessionStorage implements SessionStorageInterface
     /**
      * {@inheritdoc}
      */
-    public function setId(string $id)
+    public function setId($id)
     {
         $this->saveHandler->setId($id);
     }
@@ -196,7 +193,7 @@ class NativeSessionStorage implements SessionStorageInterface
     /**
      * {@inheritdoc}
      */
-    public function setName(string $name)
+    public function setName($name)
     {
         $this->saveHandler->setName($name);
     }
@@ -204,10 +201,10 @@ class NativeSessionStorage implements SessionStorageInterface
     /**
      * {@inheritdoc}
      */
-    public function regenerate(bool $destroy = false, int $lifetime = null)
+    public function regenerate($destroy = false, $lifetime = null)
     {
         // Cannot regenerate the session ID for non-active sessions.
-        if (PHP_SESSION_ACTIVE !== session_status()) {
+        if (\PHP_SESSION_ACTIVE !== session_status()) {
             return false;
         }
 
@@ -215,10 +212,8 @@ class NativeSessionStorage implements SessionStorageInterface
             return false;
         }
 
-        if (null !== $lifetime && $lifetime != ini_get('session.cookie_lifetime')) {
-            $this->save();
+        if (null !== $lifetime) {
             ini_set('session.cookie_lifetime', $lifetime);
-            $this->start();
         }
 
         if ($destroy) {
@@ -226,6 +221,10 @@ class NativeSessionStorage implements SessionStorageInterface
         }
 
         $isRegenerated = session_regenerate_id($destroy);
+
+        // The reference to $_SESSION in session bags is lost in PHP7 and we need to re-create it.
+        // @see https://bugs.php.net/70013
+        $this->loadSession();
 
         if (null !== $this->emulateSameSite) {
             $originalCookie = SessionUtils::popSessionCookie(session_name(), session_id());
@@ -311,10 +310,10 @@ class NativeSessionStorage implements SessionStorageInterface
     /**
      * {@inheritdoc}
      */
-    public function getBag(string $name)
+    public function getBag($name)
     {
         if (!isset($this->bags[$name])) {
-            throw new \InvalidArgumentException(sprintf('The SessionBagInterface "%s" is not registered.', $name));
+            throw new \InvalidArgumentException(sprintf('The SessionBagInterface %s is not registered.', $name));
         }
 
         if (!$this->started && $this->saveHandler->isActive()) {
@@ -365,7 +364,7 @@ class NativeSessionStorage implements SessionStorageInterface
      */
     public function setOptions(array $options)
     {
-        if (headers_sent() || PHP_SESSION_ACTIVE === session_status()) {
+        if (headers_sent() || \PHP_SESSION_ACTIVE === session_status()) {
             return;
         }
 
@@ -404,13 +403,15 @@ class NativeSessionStorage implements SessionStorageInterface
      *     ini_set('session.save_path', '/tmp');
      *
      * or pass in a \SessionHandler instance which configures session.save_handler in the
-     * constructor, for a template see NativeFileSessionHandler.
+     * constructor, for a template see NativeFileSessionHandler or use handlers in
+     * composer package drak/native-session
      *
      * @see https://php.net/session-set-save-handler
      * @see https://php.net/sessionhandlerinterface
      * @see https://php.net/sessionhandler
+     * @see https://github.com/zikula/NativeSession
      *
-     * @param AbstractProxy|\SessionHandlerInterface|null $saveHandler
+     * @param \SessionHandlerInterface|null $saveHandler
      *
      * @throws \InvalidArgumentException
      */
@@ -430,7 +431,7 @@ class NativeSessionStorage implements SessionStorageInterface
         }
         $this->saveHandler = $saveHandler;
 
-        if (headers_sent() || PHP_SESSION_ACTIVE === session_status()) {
+        if (headers_sent() || \PHP_SESSION_ACTIVE === session_status()) {
             return;
         }
 

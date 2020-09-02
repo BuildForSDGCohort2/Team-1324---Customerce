@@ -33,6 +33,8 @@ use Symfony\Component\Mime\Exception\LogicException;
  *     $guesser->registerGuesser(new FileinfoMimeTypeGuesser('/path/to/magic/file'));
  *
  * @author Fabien Potencier <fabien@symfony.com>
+ *
+ * @experimental in 4.3
  */
 final class MimeTypes implements MimeTypesInterface
 {
@@ -51,7 +53,7 @@ final class MimeTypes implements MimeTypesInterface
             $this->extensions[$mimeType] = $extensions;
 
             foreach ($extensions as $extension) {
-                $this->mimeTypes[$extension][] = $mimeType;
+                $this->mimeTypes[$extension] = $mimeType;
             }
         }
         $this->registerGuesser(new FileBinaryMimeTypeGuesser());
@@ -137,7 +139,7 @@ final class MimeTypes implements MimeTypesInterface
         }
 
         if (!$this->isGuesserSupported()) {
-            throw new LogicException('Unable to guess the MIME type as no guessers are available (have you enabled the php_fileinfo extension?).');
+            throw new LogicException('Unable to guess the MIME type as no guessers are available (have you enable the php_fileinfo extension?).');
         }
 
         return null;
@@ -526,7 +528,6 @@ final class MimeTypes implements MimeTypesInterface
         'application/vnd.ms-ims' => ['ims'],
         'application/vnd.ms-lrm' => ['lrm'],
         'application/vnd.ms-officetheme' => ['thmx'],
-        'application/vnd.ms-outlook' => ['msg'],
         'application/vnd.ms-pki.seccat' => ['cat'],
         'application/vnd.ms-pki.stl' => ['stl'],
         'application/vnd.ms-powerpoint' => ['ppt', 'pps', 'pot', 'ppz'],
@@ -1114,7 +1115,7 @@ final class MimeTypes implements MimeTypesInterface
         'audio/mp2' => ['mp2'],
         'audio/mp3' => ['mp3', 'mpga'],
         'audio/mp4' => ['m4a', 'mp4a', 'f4a'],
-        'audio/mpeg' => ['mp3', 'mpga', 'mp2', 'mp2a', 'm2a', 'm3a'],
+        'audio/mpeg' => ['mpga', 'mp2', 'mp2a', 'mp3', 'm2a', 'm3a'],
         'audio/mpegurl' => ['m3u', 'm3u8', 'vlc'],
         'audio/ogg' => ['oga', 'ogg', 'spx', 'opus'],
         'audio/prs.sid' => ['sid', 'psid'],
@@ -1252,7 +1253,6 @@ final class MimeTypes implements MimeTypesInterface
         'image/psd' => ['psd'],
         'image/rle' => ['rle'],
         'image/sgi' => ['sgi'],
-        'image/svg' => ['svg'],
         'image/svg+xml' => ['svg', 'svgz'],
         'image/svg+xml-compressed' => ['svgz'],
         'image/tiff' => ['tiff', 'tif'],
@@ -2375,7 +2375,6 @@ final class MimeTypes implements MimeTypesInterface
         'mseed' => ['application/vnd.fdsn.mseed'],
         'mseq' => ['application/vnd.mseq'],
         'msf' => ['application/vnd.epson.msf'],
-        'msg' => ['application/vnd.ms-outlook'],
         'msh' => ['model/mesh'],
         'msi' => ['application/x-msdownload', 'application/x-msi'],
         'msl' => ['application/vnd.mobius.msl'],
@@ -2811,7 +2810,7 @@ final class MimeTypes implements MimeTypesInterface
         'sv4crc' => ['application/x-sv4crc'],
         'svc' => ['application/vnd.dvb.service'],
         'svd' => ['application/vnd.svd'],
-        'svg' => ['image/svg+xml', 'image/svg'],
+        'svg' => ['image/svg+xml'],
         'svgz' => ['image/svg+xml', 'image/svg+xml-compressed'],
         'svh' => ['text/x-svhdr'],
         'swa' => ['application/x-director'],

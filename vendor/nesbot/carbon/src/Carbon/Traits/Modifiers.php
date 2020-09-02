@@ -96,7 +96,7 @@ trait Modifiers
      */
     private function nextOrPreviousDay($weekday = true, $forward = true)
     {
-        /** @var CarbonInterface $date */
+        /** @var CarbonInterface $step */
         $date = $this;
         $step = $forward ? 1 : -1;
 
@@ -457,11 +457,6 @@ trait Modifiers
             $match[1] = $test->$method($this) ? $match[1].' day' : 'today';
 
             return $match[1].' '.$match[2];
-        }, strtr(trim($modifier), [
-            ' at ' => ' ',
-            'just now' => 'now',
-            'after tomorrow' => 'tomorrow +1 day',
-            'before yesterday' => 'yesterday -1 day',
-        ])));
+        }, trim($modifier)));
     }
 }

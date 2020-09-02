@@ -2,12 +2,12 @@
 
 namespace Facade\Ignition\SolutionProviders;
 
-use Facade\IgnitionContracts\HasSolutionsForThrowable;
-use Facade\IgnitionContracts\ProvidesSolution;
-use Facade\IgnitionContracts\Solution;
-use Facade\IgnitionContracts\SolutionProviderRepository as SolutionProviderRepositoryContract;
-use Illuminate\Support\Collection;
 use Throwable;
+use Illuminate\Support\Collection;
+use Facade\IgnitionContracts\Solution;
+use Facade\IgnitionContracts\ProvidesSolution;
+use Facade\IgnitionContracts\HasSolutionsForThrowable;
+use Facade\IgnitionContracts\SolutionProviderRepository as SolutionProviderRepositoryContract;
 
 class SolutionProviderRepository implements SolutionProviderRepositoryContract
 {

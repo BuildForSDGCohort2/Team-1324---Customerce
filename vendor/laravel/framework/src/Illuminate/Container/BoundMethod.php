@@ -3,7 +3,6 @@
 namespace Illuminate\Container;
 
 use Closure;
-use Illuminate\Contracts\Container\BindingResolutionException;
 use InvalidArgumentException;
 use ReflectionFunction;
 use ReflectionMethod;
@@ -24,10 +23,6 @@ class BoundMethod
      */
     public static function call($container, $callback, array $parameters = [], $defaultMethod = null)
     {
-        if (is_string($callback) && ! $defaultMethod && method_exists($callback, '__invoke')) {
-            $defaultMethod = '__invoke';
-        }
-
         if (static::isCallableWithAtSign($callback) || $defaultMethod) {
             return static::callClass($container, $callback, $parameters, $defaultMethod);
         }
@@ -80,7 +75,7 @@ class BoundMethod
     protected static function callBoundMethod($container, $callback, $default)
     {
         if (! is_array($callback)) {
-            return Util::unwrapIfClosure($default);
+            return value($default);
         }
 
         // Here we need to turn the array callable into a Class@method string we can use to
@@ -92,7 +87,7 @@ class BoundMethod
             return $container->callMethodBinding($method, $callback[0]);
         }
 
-        return Util::unwrapIfClosure($default);
+        return value($default);
     }
 
     /**
@@ -132,7 +127,7 @@ class BoundMethod
     /**
      * Get the proper reflection instance for the given callback.
      *
-     * @param  callable|string  $callback
+     * @param  callable|string $callback
      * @return \ReflectionFunctionAbstract
      *
      * @throws \ReflectionException
@@ -162,24 +157,18 @@ class BoundMethod
     protected static function addDependencyForCallParameter($container, $parameter,
                                                             array &$parameters, &$dependencies)
     {
-        if (array_key_exists($paramName = $parameter->getName(), $parameters)) {
-            $dependencies[] = $parameters[$paramName];
+        if (array_key_exists($parameter->name, $parameters)) {
+            $dependencies[] = $parameters[$parameter->name];
 
-            unset($parameters[$paramName]);
-        } elseif (! is_null($className = Util::getParameterClassName($parameter))) {
-            if (array_key_exists($className, $parameters)) {
-                $dependencies[] = $parameters[$className];
+            unset($parameters[$parameter->name]);
+        } elseif ($parameter->getClass() && array_key_exists($parameter->getClass()->name, $parameters)) {
+            $dependencies[] = $parameters[$parameter->getClass()->name];
 
-                unset($parameters[$className]);
-            } else {
-                $dependencies[] = $container->make($className);
-            }
+            unset($parameters[$parameter->getClass()->name]);
+        } elseif ($parameter->getClass()) {
+            $dependencies[] = $container->make($parameter->getClass()->name);
         } elseif ($parameter->isDefaultValueAvailable()) {
             $dependencies[] = $parameter->getDefaultValue();
-        } elseif (! $parameter->isOptional() && ! array_key_exists($paramName, $parameters)) {
-            $message = "Unable to resolve dependency [{$parameter}] in class {$parameter->getDeclaringClass()->getName()}";
-
-            throw new BindingResolutionException($message);
         }
     }
 

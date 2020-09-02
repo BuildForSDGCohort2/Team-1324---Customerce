@@ -9,15 +9,15 @@
  * file that was distributed with this source code.
  */
 
-/*
+/**
  * Authors:
  * - François B
  * - JD Isaacks
  * - Pierre du Plessis
  */
 return [
-    'year' => ':count jaar',
-    'a_year' => '\'n jaar|:count jaar',
+    'year' => ':count jaar|:count jare',
+    'a_year' => '\'n jaar|:count jare',
     'y' => ':count j.',
     'month' => ':count maand|:count maande',
     'a_month' => '\'n maand|:count maande',
@@ -28,8 +28,8 @@ return [
     'day' => ':count dag|:count dae',
     'a_day' => '\'n dag|:count dae',
     'd' => ':count d.',
-    'hour' => ':count uur',
-    'a_hour' => '\'n uur|:count uur',
+    'hour' => ':count uur|:count ure',
+    'a_hour' => '\'n uur|:count ure',
     'h' => ':count u.',
     'minute' => ':count minuut|:count minute',
     'a_minute' => '\'n minuut|:count minute',
@@ -41,13 +41,8 @@ return [
     'from_now' => 'oor :time',
     'after' => ':time na',
     'before' => ':time voor',
-    'diff_now' => 'Nou',
-    'diff_today' => 'Vandag',
-    'diff_today_regexp' => 'Vandag(?:\\s+om)?',
     'diff_yesterday' => 'Gister',
-    'diff_yesterday_regexp' => 'Gister(?:\\s+om)?',
     'diff_tomorrow' => 'Môre',
-    'diff_tomorrow_regexp' => 'Môre(?:\\s+om)?',
     'formats' => [
         'LT' => 'HH:mm',
         'LTS' => 'HH:mm:ss',

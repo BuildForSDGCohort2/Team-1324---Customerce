@@ -173,7 +173,7 @@ class PostgresGrammar extends Grammar
      * Compile an insert and get ID statement into SQL.
      *
      * @param  \Illuminate\Database\Query\Builder  $query
-     * @param  array  $values
+     * @param  array   $values
      * @param  string  $sequence
      * @return string
      */
@@ -380,9 +380,7 @@ class PostgresGrammar extends Grammar
     protected function wrapJsonPathAttributes($path)
     {
         return array_map(function ($attribute) {
-            return filter_var($attribute, FILTER_VALIDATE_INT) !== false
-                        ? $attribute
-                        : "'$attribute'";
+            return "'$attribute'";
         }, $path);
     }
 }

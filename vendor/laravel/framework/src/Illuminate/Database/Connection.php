@@ -8,10 +8,6 @@ use Doctrine\DBAL\Connection as DoctrineConnection;
 use Exception;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Database\Events\QueryExecuted;
-use Illuminate\Database\Events\StatementPrepared;
-use Illuminate\Database\Events\TransactionBeginning;
-use Illuminate\Database\Events\TransactionCommitted;
-use Illuminate\Database\Events\TransactionRolledBack;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\Query\Expression;
 use Illuminate\Database\Query\Grammars\Grammar as QueryGrammar;
@@ -157,10 +153,10 @@ class Connection implements ConnectionInterface
     /**
      * Create a new database connection instance.
      *
-     * @param  \PDO|\Closure  $pdo
-     * @param  string  $database
-     * @param  string  $tablePrefix
-     * @param  array  $config
+     * @param  \PDO|\Closure     $pdo
+     * @param  string   $database
+     * @param  string   $tablePrefix
+     * @param  array    $config
      * @return void
      */
     public function __construct($pdo, $database = '', $tablePrefix = '', array $config = [])
@@ -286,7 +282,7 @@ class Connection implements ConnectionInterface
      * Run a select statement and return a single result.
      *
      * @param  string  $query
-     * @param  array  $bindings
+     * @param  array   $bindings
      * @param  bool  $useReadPdo
      * @return mixed
      */
@@ -301,7 +297,7 @@ class Connection implements ConnectionInterface
      * Run a select statement against the database.
      *
      * @param  string  $query
-     * @param  array  $bindings
+     * @param  array   $bindings
      * @return array
      */
     public function selectFromWriteConnection($query, $bindings = [])
@@ -327,9 +323,8 @@ class Connection implements ConnectionInterface
             // For select statements, we'll simply execute the query and return an array
             // of the database result set. Each element in the array will be a single
             // row from the database table, and will either be an array or objects.
-            $statement = $this->prepared(
-                $this->getPdoForSelect($useReadPdo)->prepare($query)
-            );
+            $statement = $this->prepared($this->getPdoForSelect($useReadPdo)
+                              ->prepare($query));
 
             $this->bindValues($statement, $this->prepareBindings($bindings));
 
@@ -387,7 +382,7 @@ class Connection implements ConnectionInterface
     {
         $statement->setFetchMode($this->fetchMode);
 
-        $this->event(new StatementPrepared(
+        $this->event(new Events\StatementPrepared(
             $this, $statement
         ));
 
@@ -409,7 +404,7 @@ class Connection implements ConnectionInterface
      * Run an insert statement against the database.
      *
      * @param  string  $query
-     * @param  array  $bindings
+     * @param  array   $bindings
      * @return bool
      */
     public function insert($query, $bindings = [])
@@ -421,7 +416,7 @@ class Connection implements ConnectionInterface
      * Run an update statement against the database.
      *
      * @param  string  $query
-     * @param  array  $bindings
+     * @param  array   $bindings
      * @return int
      */
     public function update($query, $bindings = [])
@@ -433,7 +428,7 @@ class Connection implements ConnectionInterface
      * Run a delete statement against the database.
      *
      * @param  string  $query
-     * @param  array  $bindings
+     * @param  array   $bindings
      * @return int
      */
     public function delete($query, $bindings = [])
@@ -445,7 +440,7 @@ class Connection implements ConnectionInterface
      * Execute an SQL statement and return the boolean result.
      *
      * @param  string  $query
-     * @param  array  $bindings
+     * @param  array   $bindings
      * @return bool
      */
     public function statement($query, $bindings = [])
@@ -469,7 +464,7 @@ class Connection implements ConnectionInterface
      * Run an SQL statement and get the number of rows affected.
      *
      * @param  string  $query
-     * @param  array  $bindings
+     * @param  array   $bindings
      * @return int
      */
     public function affectingStatement($query, $bindings = [])
@@ -569,7 +564,7 @@ class Connection implements ConnectionInterface
     /**
      * Bind values to their parameters in the given statement.
      *
-     * @param  \PDOStatement  $statement
+     * @param  \PDOStatement $statement
      * @param  array  $bindings
      * @return void
      */
@@ -577,8 +572,7 @@ class Connection implements ConnectionInterface
     {
         foreach ($bindings as $key => $value) {
             $statement->bindValue(
-                is_string($key) ? $key : $key + 1,
-                $value,
+                is_string($key) ? $key : $key + 1, $value,
                 is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR
             );
         }
@@ -611,8 +605,8 @@ class Connection implements ConnectionInterface
     /**
      * Run a SQL statement and log its execution context.
      *
-     * @param  string  $query
-     * @param  array  $bindings
+     * @param  string    $query
+     * @param  array     $bindings
      * @param  \Closure  $callback
      * @return mixed
      *
@@ -648,8 +642,8 @@ class Connection implements ConnectionInterface
     /**
      * Run a SQL statement.
      *
-     * @param  string  $query
-     * @param  array  $bindings
+     * @param  string    $query
+     * @param  array     $bindings
      * @param  \Closure  $callback
      * @return mixed
      *
@@ -680,7 +674,7 @@ class Connection implements ConnectionInterface
      * Log a query in the connection's query log.
      *
      * @param  string  $query
-     * @param  array  $bindings
+     * @param  array   $bindings
      * @param  float|null  $time
      * @return void
      */
@@ -696,7 +690,7 @@ class Connection implements ConnectionInterface
     /**
      * Get the elapsed time since a given starting point.
      *
-     * @param  int  $start
+     * @param  int    $start
      * @return float
      */
     protected function getElapsedTime($start)
@@ -730,8 +724,8 @@ class Connection implements ConnectionInterface
      * Handle a query exception that occurred during query execution.
      *
      * @param  \Illuminate\Database\QueryException  $e
-     * @param  string  $query
-     * @param  array  $bindings
+     * @param  string    $query
+     * @param  array     $bindings
      * @param  \Closure  $callback
      * @return mixed
      *
@@ -815,11 +809,11 @@ class Connection implements ConnectionInterface
 
         switch ($event) {
             case 'beganTransaction':
-                return $this->events->dispatch(new TransactionBeginning($this));
+                return $this->events->dispatch(new Events\TransactionBeginning($this));
             case 'committed':
-                return $this->events->dispatch(new TransactionCommitted($this));
+                return $this->events->dispatch(new Events\TransactionCommitted($this));
             case 'rollingBack':
-                return $this->events->dispatch(new TransactionRolledBack($this));
+                return $this->events->dispatch(new Events\TransactionRolledBack($this));
         }
     }
 
@@ -906,7 +900,7 @@ class Connection implements ConnectionInterface
 
             $this->doctrineConnection = new DoctrineConnection(array_filter([
                 'pdo' => $this->getPdo(),
-                'dbname' => $this->getDatabaseName(),
+                'dbname' => $this->getConfig('database'),
                 'driver' => $driver->getName(),
                 'serverVersion' => $this->getConfig('server_version'),
             ]), $driver);
@@ -930,16 +924,6 @@ class Connection implements ConnectionInterface
     }
 
     /**
-     * Get the current PDO connection parameter without executing any reconnect logic.
-     *
-     * @return \PDO|\Closure|null
-     */
-    public function getRawPdo()
-    {
-        return $this->pdo;
-    }
-
-    /**
      * Get the current PDO connection used for reading.
      *
      * @return \PDO
@@ -959,16 +943,6 @@ class Connection implements ConnectionInterface
         }
 
         return $this->readPdo ?: $this->getPdo();
-    }
-
-    /**
-     * Get the current read PDO connection parameter without executing any reconnect logic.
-     *
-     * @return \PDO|\Closure|null
-     */
-    public function getRawReadPdo()
-    {
-        return $this->readPdo;
     }
 
     /**

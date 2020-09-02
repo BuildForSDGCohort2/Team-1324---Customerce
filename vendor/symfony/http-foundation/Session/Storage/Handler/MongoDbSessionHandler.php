@@ -61,12 +61,15 @@ class MongoDbSessionHandler extends AbstractSessionHandler
      * If you use such an index, you can drop `gc_probability` to 0 since
      * no garbage-collection is required.
      *
+     * @param \MongoDB\Client $mongo   A MongoDB\Client instance
+     * @param array           $options An associative array of field options
+     *
      * @throws \InvalidArgumentException When "database" or "collection" not provided
      */
     public function __construct(\MongoDB\Client $mongo, array $options)
     {
         if (!isset($options['database']) || !isset($options['collection'])) {
-            throw new \InvalidArgumentException('You must provide the "database" and "collection" option for MongoDBSessionHandler.');
+            throw new \InvalidArgumentException('You must provide the "database" and "collection" option for MongoDBSessionHandler');
         }
 
         $this->mongo = $mongo;
@@ -80,7 +83,7 @@ class MongoDbSessionHandler extends AbstractSessionHandler
     }
 
     /**
-     * @return bool
+     * {@inheritdoc}
      */
     public function close()
     {
@@ -90,7 +93,7 @@ class MongoDbSessionHandler extends AbstractSessionHandler
     /**
      * {@inheritdoc}
      */
-    protected function doDestroy(string $sessionId)
+    protected function doDestroy($sessionId)
     {
         $this->getCollection()->deleteOne([
             $this->options['id_field'] => $sessionId,
@@ -100,7 +103,7 @@ class MongoDbSessionHandler extends AbstractSessionHandler
     }
 
     /**
-     * @return bool
+     * {@inheritdoc}
      */
     public function gc($maxlifetime)
     {
@@ -114,7 +117,7 @@ class MongoDbSessionHandler extends AbstractSessionHandler
     /**
      * {@inheritdoc}
      */
-    protected function doWrite(string $sessionId, string $data)
+    protected function doWrite($sessionId, $data)
     {
         $expiry = new \MongoDB\BSON\UTCDateTime((time() + (int) ini_get('session.gc_maxlifetime')) * 1000);
 
@@ -134,7 +137,7 @@ class MongoDbSessionHandler extends AbstractSessionHandler
     }
 
     /**
-     * @return bool
+     * {@inheritdoc}
      */
     public function updateTimestamp($sessionId, $data)
     {
@@ -154,7 +157,7 @@ class MongoDbSessionHandler extends AbstractSessionHandler
     /**
      * {@inheritdoc}
      */
-    protected function doRead(string $sessionId)
+    protected function doRead($sessionId)
     {
         $dbData = $this->getCollection()->findOne([
             $this->options['id_field'] => $sessionId,
@@ -168,7 +171,10 @@ class MongoDbSessionHandler extends AbstractSessionHandler
         return $dbData[$this->options['data_field']]->getData();
     }
 
-    private function getCollection(): \MongoDB\Collection
+    /**
+     * @return \MongoDB\Collection
+     */
+    private function getCollection()
     {
         if (null === $this->collection) {
             $this->collection = $this->mongo->selectCollection($this->options['database'], $this->options['collection']);

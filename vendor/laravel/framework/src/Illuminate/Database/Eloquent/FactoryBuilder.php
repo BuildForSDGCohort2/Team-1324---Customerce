@@ -25,6 +25,13 @@ class FactoryBuilder
     protected $class;
 
     /**
+     * The name of the model being built.
+     *
+     * @var string
+     */
+    protected $name = 'default';
+
+    /**
      * The database connection on which the model instance should be persisted.
      *
      * @var string
@@ -77,6 +84,7 @@ class FactoryBuilder
      * Create an new builder instance.
      *
      * @param  string  $class
+     * @param  string  $name
      * @param  array  $definitions
      * @param  array  $states
      * @param  array  $afterMaking
@@ -84,9 +92,10 @@ class FactoryBuilder
      * @param  \Faker\Generator  $faker
      * @return void
      */
-    public function __construct($class, array $definitions, array $states,
+    public function __construct($class, $name, array $definitions, array $states,
                                 array $afterMaking, array $afterCreating, Faker $faker)
     {
+        $this->name = $name;
         $this->class = $class;
         $this->faker = $faker;
         $this->states = $states;
@@ -162,7 +171,7 @@ class FactoryBuilder
      * Create a collection of models and persist them to the database.
      *
      * @param  array  $attributes
-     * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|mixed
+     * @return mixed
      */
     public function create(array $attributes = [])
     {
@@ -179,19 +188,6 @@ class FactoryBuilder
         }
 
         return $results;
-    }
-
-    /**
-     * Create a collection of models and persist them to the database.
-     *
-     * @param  iterable  $records
-     * @return \Illuminate\Database\Eloquent\Collection|mixed
-     */
-    public function createMany(iterable $records)
-    {
-        return (new $this->class)->newCollection(array_map(function ($attribute) {
-            return $this->create($attribute);
-        }, $records));
     }
 
     /**
@@ -215,7 +211,7 @@ class FactoryBuilder
      * Create a collection of models.
      *
      * @param  array  $attributes
-     * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|mixed
+     * @return mixed
      */
     public function make(array $attributes = [])
     {
@@ -269,12 +265,12 @@ class FactoryBuilder
      */
     protected function getRawAttributes(array $attributes = [])
     {
-        if (! isset($this->definitions[$this->class])) {
-            throw new InvalidArgumentException("Unable to locate factory for [{$this->class}].");
+        if (! isset($this->definitions[$this->class][$this->name])) {
+            throw new InvalidArgumentException("Unable to locate factory with name [{$this->name}] [{$this->class}].");
         }
 
         $definition = call_user_func(
-            $this->definitions[$this->class],
+            $this->definitions[$this->class][$this->name],
             $this->faker, $attributes
         );
 
@@ -407,7 +403,7 @@ class FactoryBuilder
      */
     protected function callAfter(array $afterCallbacks, $models)
     {
-        $states = array_merge(['default'], $this->activeStates);
+        $states = array_merge([$this->name], $this->activeStates);
 
         $models->each(function ($model) use ($states, $afterCallbacks) {
             foreach ($states as $state) {

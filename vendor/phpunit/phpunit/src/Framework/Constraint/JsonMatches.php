@@ -74,19 +74,17 @@ final class JsonMatches extends Constraint
      * @throws ExpectationFailedException
      * @throws \PHPUnit\Framework\Exception
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     *
-     * @psalm-return never-return
      */
     protected function fail($other, $description, ComparisonFailure $comparisonFailure = null): void
     {
         if ($comparisonFailure === null) {
-            [$error, $recodedOther] = Json::canonicalize($other);
+            [$error] = Json::canonicalize($other);
 
             if ($error) {
                 parent::fail($other, $description);
             }
 
-            [$error, $recodedValue] = Json::canonicalize($this->value);
+            [$error] = Json::canonicalize($this->value);
 
             if ($error) {
                 parent::fail($other, $description);
@@ -95,8 +93,8 @@ final class JsonMatches extends Constraint
             $comparisonFailure = new ComparisonFailure(
                 \json_decode($this->value),
                 \json_decode($other),
-                Json::prettify($recodedValue),
-                Json::prettify($recodedOther),
+                Json::prettify($this->value),
+                Json::prettify($other),
                 false,
                 'Failed asserting that two json values are equal.'
             );

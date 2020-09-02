@@ -108,9 +108,9 @@ class UrlGenerator implements UrlGeneratorInterface, ConfigurableRequirementsInt
     /**
      * {@inheritdoc}
      */
-    public function setStrictRequirements(?bool $enabled)
+    public function setStrictRequirements($enabled)
     {
-        $this->strictRequirements = $enabled;
+        $this->strictRequirements = null === $enabled ? null : (bool) $enabled;
     }
 
     /**
@@ -124,7 +124,7 @@ class UrlGenerator implements UrlGeneratorInterface, ConfigurableRequirementsInt
     /**
      * {@inheritdoc}
      */
-    public function generate(string $name, array $parameters = [], int $referenceType = self::ABSOLUTE_PATH)
+    public function generate($name, $parameters = [], $referenceType = self::ABSOLUTE_PATH)
     {
         $route = null;
         $locale = $parameters['_locale']
@@ -134,6 +134,7 @@ class UrlGenerator implements UrlGeneratorInterface, ConfigurableRequirementsInt
         if (null !== $locale) {
             do {
                 if (null !== ($route = $this->routes->get($name.'.'.$locale)) && $route->getDefault('_canonical_route') === $name) {
+                    unset($parameters['_locale']);
                     break;
                 }
             } while (false !== $locale = strstr($locale, '_', true));
@@ -146,18 +147,7 @@ class UrlGenerator implements UrlGeneratorInterface, ConfigurableRequirementsInt
         // the Route has a cache of its own and is not recompiled as long as it does not get modified
         $compiledRoute = $route->compile();
 
-        $defaults = $route->getDefaults();
-        $variables = $compiledRoute->getVariables();
-
-        if (isset($defaults['_canonical_route']) && isset($defaults['_locale'])) {
-            if (!\in_array('_locale', $variables, true)) {
-                unset($parameters['_locale']);
-            } elseif (!isset($parameters['_locale'])) {
-                $parameters['_locale'] = $defaults['_locale'];
-            }
-        }
-
-        return $this->doGenerate($variables, $defaults, $route->getRequirements(), $compiledRoute->getTokens(), $parameters, $name, $referenceType, $compiledRoute->getHostTokens(), $route->getSchemes());
+        return $this->doGenerate($compiledRoute->getVariables(), $route->getDefaults(), $route->getRequirements(), $compiledRoute->getTokens(), $parameters, $name, $referenceType, $compiledRoute->getHostTokens(), $route->getSchemes());
     }
 
     /**
@@ -167,7 +157,7 @@ class UrlGenerator implements UrlGeneratorInterface, ConfigurableRequirementsInt
      *
      * @return string
      */
-    protected function doGenerate(array $variables, array $defaults, array $requirements, array $tokens, array $parameters, string $name, int $referenceType, array $hostTokens, array $requiredSchemes = [])
+    protected function doGenerate($variables, $defaults, $requirements, $tokens, $parameters, $name, $referenceType, $hostTokens, array $requiredSchemes = [])
     {
         $variables = array_flip($variables);
         $mergedParams = array_replace($defaults, $this->context->getParameters(), $parameters);
@@ -333,7 +323,7 @@ class UrlGenerator implements UrlGeneratorInterface, ConfigurableRequirementsInt
      *
      * @return string The relative target path
      */
-    public static function getRelativePath(string $basePath, string $targetPath)
+    public static function getRelativePath($basePath, $targetPath)
     {
         if ($basePath === $targetPath) {
             return '';

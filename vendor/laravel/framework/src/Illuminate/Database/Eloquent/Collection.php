@@ -87,11 +87,9 @@ class Collection extends BaseCollection implements QueueableCollection
         );
 
         $models->each(function ($model) use ($attributes) {
-            $this->where($this->first()->getKeyName(), $model->getKey())
-                ->each
-                ->forceFill(Arr::only($model->getAttributes(), $attributes))
-                ->each
-                ->syncOriginalAttributes($attributes);
+            $this->find($model->getKey())->forceFill(
+                Arr::only($model->getAttributes(), $attributes)
+            )->syncOriginalAttributes($attributes);
         });
 
         return $this;
@@ -186,27 +184,6 @@ class Collection extends BaseCollection implements QueueableCollection
             })
             ->each(function ($models, $className) use ($relations) {
                 static::make($models)->load($relations[$className] ?? []);
-            });
-
-        return $this;
-    }
-
-    /**
-     * Load a set of relationship counts onto the mixed relationship collection.
-     *
-     * @param  string  $relation
-     * @param  array  $relations
-     * @return $this
-     */
-    public function loadMorphCount($relation, $relations)
-    {
-        $this->pluck($relation)
-            ->filter()
-            ->groupBy(function ($model) {
-                return get_class($model);
-            })
-            ->each(function ($models, $className) use ($relations) {
-                static::make($models)->loadCount($relations[$className] ?? []);
             });
 
         return $this;
@@ -338,10 +315,6 @@ class Collection extends BaseCollection implements QueueableCollection
     {
         $intersect = new static;
 
-        if (empty($items)) {
-            return $intersect;
-        }
-
         $dictionary = $this->getDictionary($items);
 
         foreach ($this->items as $item) {
@@ -407,7 +380,7 @@ class Collection extends BaseCollection implements QueueableCollection
      */
     public function makeHidden($attributes)
     {
-        return $this->each->makeHidden($attributes);
+        return $this->each->addHidden($attributes);
     }
 
     /**
@@ -419,17 +392,6 @@ class Collection extends BaseCollection implements QueueableCollection
     public function makeVisible($attributes)
     {
         return $this->each->makeVisible($attributes);
-    }
-
-    /**
-     * Append an attribute across the entire collection.
-     *
-     * @param  array|string  $attributes
-     * @return $this
-     */
-    public function append($attributes)
-    {
-        return $this->each->append($attributes);
     }
 
     /**
@@ -458,7 +420,7 @@ class Collection extends BaseCollection implements QueueableCollection
     /**
      * Get an array with the values of a given key.
      *
-     * @param  string|array  $value
+     * @param  string  $value
      * @param  string|null  $key
      * @return \Illuminate\Support\Collection
      */
@@ -480,7 +442,7 @@ class Collection extends BaseCollection implements QueueableCollection
     /**
      * Zip the collection together with one or more arrays.
      *
-     * @param  mixed  ...$items
+     * @param  mixed ...$items
      * @return \Illuminate\Support\Collection
      */
     public function zip($items)
@@ -523,7 +485,7 @@ class Collection extends BaseCollection implements QueueableCollection
      * Pad collection to the specified length with a value.
      *
      * @param  int  $size
-     * @param  mixed  $value
+     * @param  mixed $value
      * @return \Illuminate\Support\Collection
      */
     public function pad($size, $value)
@@ -591,19 +553,7 @@ class Collection extends BaseCollection implements QueueableCollection
      */
     public function getQueueableRelations()
     {
-        if ($this->isEmpty()) {
-            return [];
-        }
-
-        $relations = $this->map->getQueueableRelations()->all();
-
-        if (count($relations) === 0 || $relations === [[]]) {
-            return [];
-        } elseif (count($relations) === 1) {
-            return reset($relations);
-        } else {
-            return array_intersect(...$relations);
-        }
+        return $this->isNotEmpty() ? $this->first()->getQueueableRelations() : [];
     }
 
     /**
@@ -628,31 +578,5 @@ class Collection extends BaseCollection implements QueueableCollection
         });
 
         return $connection;
-    }
-
-    /**
-     * Get the Eloquent query builder from the collection.
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
-     *
-     * @throws \LogicException
-     */
-    public function toQuery()
-    {
-        $model = $this->first();
-
-        if (! $model) {
-            throw new LogicException('Unable to create query for empty collection.');
-        }
-
-        $class = get_class($model);
-
-        if ($this->filter(function ($model) use ($class) {
-            return ! $model instanceof $class;
-        })->isNotEmpty()) {
-            throw new LogicException('Unable to create query for collection with mixed types.');
-        }
-
-        return $model->newModelQuery()->whereKey($this->modelKeys());
     }
 }

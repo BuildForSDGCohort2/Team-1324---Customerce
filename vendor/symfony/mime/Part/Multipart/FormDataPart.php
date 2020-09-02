@@ -20,6 +20,8 @@ use Symfony\Component\Mime\Part\TextPart;
  * Implements RFC 7578.
  *
  * @author Fabien Potencier <fabien@symfony.com>
+ *
+ * @experimental in 4.3
  */
 final class FormDataPart extends AbstractMultipartPart
 {
@@ -34,7 +36,7 @@ final class FormDataPart extends AbstractMultipartPart
 
         foreach ($fields as $name => $value) {
             if (!\is_string($value) && !\is_array($value) && !$value instanceof TextPart) {
-                throw new InvalidArgumentException(sprintf('A form field value can only be a string, an array, or an instance of TextPart ("%s" given).', get_debug_type($value)));
+                throw new InvalidArgumentException(sprintf('A form field value can only be a string, an array, or an instance of TextPart ("%s" given).', \is_object($value) ? \get_class($value) : \gettype($value)));
             }
 
             $this->fields[$name] = $value;
@@ -56,25 +58,16 @@ final class FormDataPart extends AbstractMultipartPart
     private function prepareFields(array $fields): array
     {
         $values = [];
-
-        $prepare = function ($item, $key, $root = null) use (&$values, &$prepare) {
-            $fieldName = $root ? sprintf('%s[%s]', $root, $key) : $key;
-
-            if (\is_array($item)) {
-                array_walk($item, $prepare, $fieldName);
-
-                return;
+        array_walk_recursive($fields, function ($item, $key) use (&$values) {
+            if (!\is_array($item)) {
+                $values[] = $this->preparePart($key, $item);
             }
-
-            $values[] = $this->preparePart($fieldName, $item);
-        };
-
-        array_walk($fields, $prepare);
+        });
 
         return $values;
     }
 
-    private function preparePart(string $name, $value): TextPart
+    private function preparePart($name, $value): TextPart
     {
         if (\is_string($value)) {
             return $this->configurePart($name, new TextPart($value, 'utf-8', 'plain', '8bit'));

@@ -16,12 +16,10 @@ use Symfony\Component\VarDumper\Cloner\Stub;
 /**
  * @author Nicolas Grekas <p@tchwork.com>
  * @author Jan Schädlich <jan.schaedlich@sensiolabs.de>
- *
- * @final
  */
 class IntlCaster
 {
-    public static function castMessageFormatter(\MessageFormatter $c, array $a, Stub $stub, bool $isNested)
+    public static function castMessageFormatter(\MessageFormatter $c, array $a, Stub $stub, $isNested)
     {
         $a += [
             Caster::PREFIX_VIRTUAL.'locale' => $c->getLocale(),
@@ -31,7 +29,7 @@ class IntlCaster
         return self::castError($c, $a);
     }
 
-    public static function castNumberFormatter(\NumberFormatter $c, array $a, Stub $stub, bool $isNested, int $filter = 0)
+    public static function castNumberFormatter(\NumberFormatter $c, array $a, Stub $stub, $isNested, $filter = 0)
     {
         $a += [
             Caster::PREFIX_VIRTUAL.'locale' => $c->getLocale(),
@@ -108,7 +106,7 @@ class IntlCaster
         return self::castError($c, $a);
     }
 
-    public static function castIntlTimeZone(\IntlTimeZone $c, array $a, Stub $stub, bool $isNested)
+    public static function castIntlTimeZone(\IntlTimeZone $c, array $a, Stub $stub, $isNested)
     {
         $a += [
             Caster::PREFIX_VIRTUAL.'display_name' => $c->getDisplayName(),
@@ -125,7 +123,7 @@ class IntlCaster
         return self::castError($c, $a);
     }
 
-    public static function castIntlCalendar(\IntlCalendar $c, array $a, Stub $stub, bool $isNested, int $filter = 0)
+    public static function castIntlCalendar(\IntlCalendar $c, array $a, Stub $stub, $isNested, $filter = 0)
     {
         $a += [
             Caster::PREFIX_VIRTUAL.'type' => $c->getType(),
@@ -142,7 +140,7 @@ class IntlCaster
         return self::castError($c, $a);
     }
 
-    public static function castIntlDateFormatter(\IntlDateFormatter $c, array $a, Stub $stub, bool $isNested, int $filter = 0)
+    public static function castIntlDateFormatter(\IntlDateFormatter $c, array $a, Stub $stub, $isNested, $filter = 0)
     {
         $a += [
             Caster::PREFIX_VIRTUAL.'locale' => $c->getLocale(),
@@ -158,7 +156,7 @@ class IntlCaster
         return self::castError($c, $a);
     }
 
-    private static function castError(object $c, array $a): array
+    private static function castError($c, array $a): array
     {
         if ($errorCode = $c->getErrorCode()) {
             $a += [

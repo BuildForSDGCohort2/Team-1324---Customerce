@@ -17,8 +17,10 @@ use Illuminate\Foundation\Bus\PendingDispatch;
 use Illuminate\Foundation\Mix;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Queue\CallQueuedClosure;
+use Illuminate\Queue\SerializableClosure;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\HtmlString;
+use Symfony\Component\Debug\Exception\FatalThrowableError;
 use Symfony\Component\HttpFoundation\Response;
 
 if (! function_exists('abort')) {
@@ -50,7 +52,7 @@ if (! function_exists('abort_if')) {
      * Throw an HttpException with the given data if the given condition is true.
      *
      * @param  bool  $boolean
-     * @param  \Symfony\Component\HttpFoundation\Response|\Illuminate\Contracts\Support\Responsable|int  $code
+     * @param  int  $code
      * @param  string  $message
      * @param  array  $headers
      * @return void
@@ -71,7 +73,7 @@ if (! function_exists('abort_unless')) {
      * Throw an HttpException with the given data unless the given condition is true.
      *
      * @param  bool  $boolean
-     * @param  \Symfony\Component\HttpFoundation\Response|\Illuminate\Contracts\Support\Responsable|int  $code
+     * @param  int  $code
      * @param  string  $message
      * @param  array  $headers
      * @return void
@@ -248,7 +250,13 @@ if (! function_exists('cache')) {
             );
         }
 
-        return app('cache')->put(key($arguments[0]), reset($arguments[0]), $arguments[1] ?? null);
+        if (! isset($arguments[1])) {
+            throw new Exception(
+                'You must specify an expiration time when setting a value in the cache.'
+            );
+        }
+
+        return app('cache')->put(key($arguments[0]), reset($arguments[0]), $arguments[1]);
     }
 }
 
@@ -298,13 +306,13 @@ if (! function_exists('cookie')) {
      * @param  int  $minutes
      * @param  string|null  $path
      * @param  string|null  $domain
-     * @param  bool|null  $secure
+     * @param  bool  $secure
      * @param  bool  $httpOnly
      * @param  bool  $raw
      * @param  string|null  $sameSite
      * @return \Illuminate\Cookie\CookieJar|\Symfony\Component\HttpFoundation\Cookie
      */
-    function cookie($name = null, $value = null, $minutes = 0, $path = null, $domain = null, $secure = null, $httpOnly = true, $raw = false, $sameSite = null)
+    function cookie($name = null, $value = null, $minutes = 0, $path = null, $domain = null, $secure = false, $httpOnly = true, $raw = false, $sameSite = null)
     {
         $cookie = app(CookieFactory::class);
 
@@ -385,7 +393,7 @@ if (! function_exists('dispatch')) {
     function dispatch($job)
     {
         if ($job instanceof Closure) {
-            $job = CallQueuedClosure::create($job);
+            $job = new CallQueuedClosure(new SerializableClosure($job));
         }
 
         return new PendingDispatch($job);
@@ -415,8 +423,6 @@ if (! function_exists('elixir')) {
      * @return string
      *
      * @throws \InvalidArgumentException
-     *
-     * @deprecated Use Laravel Mix instead.
      */
     function elixir($file, $buildDirectory = 'build')
     {
@@ -479,21 +485,24 @@ if (! function_exists('event')) {
 
 if (! function_exists('factory')) {
     /**
-     * Create a model factory builder for a given class and amount.
+     * Create a model factory builder for a given class, name, and amount.
      *
-     * @param  string  $class
-     * @param  int  $amount
+     * @param  dynamic  class|class,name|class,amount|class,name,amount
      * @return \Illuminate\Database\Eloquent\FactoryBuilder
      */
-    function factory($class, $amount = null)
+    function factory()
     {
         $factory = app(EloquentFactory::class);
 
-        if (isset($amount) && is_int($amount)) {
-            return $factory->of($class)->times($amount);
+        $arguments = func_get_args();
+
+        if (isset($arguments[1]) && is_string($arguments[1])) {
+            return $factory->of($arguments[0], $arguments[1])->times($arguments[2] ?? null);
+        } elseif (isset($arguments[1])) {
+            return $factory->of($arguments[0])->times($arguments[1]);
         }
 
-        return $factory->of($class);
+        return $factory->of($arguments[0]);
     }
 }
 
@@ -653,8 +662,13 @@ if (! function_exists('report')) {
      * @param  \Throwable  $exception
      * @return void
      */
-    function report(Throwable $exception)
+    function report($exception)
     {
+        if ($exception instanceof Throwable &&
+            ! $exception instanceof Exception) {
+            $exception = new FatalThrowableError($exception);
+        }
+
         app(ExceptionHandler::class)->report($exception);
     }
 }
@@ -701,7 +715,7 @@ if (! function_exists('rescue')) {
                 report($e);
             }
 
-            return $rescue instanceof Closure ? $rescue($e) : $rescue;
+            return value($rescue);
         }
     }
 }
@@ -888,7 +902,7 @@ if (! function_exists('__')) {
      * @param  string|null  $key
      * @param  array  $replace
      * @param  string|null  $locale
-     * @return string|array|null
+     * @return \Illuminate\Contracts\Translation\Translator|string|array|null
      */
     function __($key = null, $replace = [], $locale = null)
     {
@@ -904,7 +918,7 @@ if (! function_exists('url')) {
     /**
      * Generate a url for the application.
      *
-     * @param  string|null  $path
+     * @param  string  $path
      * @param  mixed  $parameters
      * @param  bool|null  $secure
      * @return \Illuminate\Contracts\Routing\UrlGenerator|string

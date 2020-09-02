@@ -16,9 +16,9 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Event\FinishRequestEvent;
-use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -38,7 +38,7 @@ use Symfony\Component\Routing\RequestContextAwareInterface;
  * @author Fabien Potencier <fabien@symfony.com>
  * @author Yonel Ceruto <yonelceruto@gmail.com>
  *
- * @final
+ * @final since Symfony 4.3
  */
 class RouterListener implements EventSubscriberInterface
 {
@@ -50,8 +50,10 @@ class RouterListener implements EventSubscriberInterface
     private $debug;
 
     /**
-     * @param UrlMatcherInterface|RequestMatcherInterface $matcher    The Url or Request matcher
-     * @param RequestContext|null                         $context    The RequestContext (can be null when $matcher implements RequestContextAwareInterface)
+     * @param UrlMatcherInterface|RequestMatcherInterface $matcher      The Url or Request matcher
+     * @param RequestStack                                $requestStack A RequestStack instance
+     * @param RequestContext|null                         $context      The RequestContext (can be null when $matcher implements RequestContextAwareInterface)
+     * @param LoggerInterface|null                        $logger       The logger
      * @param string                                      $projectDir
      *
      * @throws \InvalidArgumentException
@@ -94,7 +96,7 @@ class RouterListener implements EventSubscriberInterface
         $this->setCurrentRequest($this->requestStack->getParentRequest());
     }
 
-    public function onKernelRequest(RequestEvent $event)
+    public function onKernelRequest(GetResponseEvent $event)
     {
         $request = $event->getRequest();
 
@@ -141,9 +143,9 @@ class RouterListener implements EventSubscriberInterface
         }
     }
 
-    public function onKernelException(ExceptionEvent $event)
+    public function onKernelException(GetResponseForExceptionEvent $event)
     {
-        if (!$this->debug || !($e = $event->getThrowable()) instanceof NotFoundHttpException) {
+        if (!$this->debug || !($e = $event->getException()) instanceof NotFoundHttpException) {
             return;
         }
 
@@ -152,7 +154,7 @@ class RouterListener implements EventSubscriberInterface
         }
     }
 
-    public static function getSubscribedEvents(): array
+    public static function getSubscribedEvents()
     {
         return [
             KernelEvents::REQUEST => [['onKernelRequest', 32]],
@@ -161,14 +163,14 @@ class RouterListener implements EventSubscriberInterface
         ];
     }
 
-    private function createWelcomeResponse(): Response
+    private function createWelcomeResponse()
     {
         $version = Kernel::VERSION;
-        $projectDir = realpath($this->projectDir).\DIRECTORY_SEPARATOR;
+        $baseDir = realpath($this->projectDir).\DIRECTORY_SEPARATOR;
         $docVersion = substr(Kernel::VERSION, 0, 3);
 
         ob_start();
-        include \dirname(__DIR__).'/Resources/welcome.html.php';
+        include __DIR__.'/../Resources/welcome.html.php';
 
         return new Response(ob_get_clean(), Response::HTTP_NOT_FOUND);
     }

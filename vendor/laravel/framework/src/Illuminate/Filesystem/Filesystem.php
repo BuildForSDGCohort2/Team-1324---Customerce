@@ -6,9 +6,7 @@ use ErrorException;
 use FilesystemIterator;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Traits\Macroable;
-use RuntimeException;
 use Symfony\Component\Finder\Finder;
-use Symfony\Component\Mime\MimeTypes;
 
 class Filesystem
 {
@@ -51,7 +49,7 @@ class Filesystem
             return $lock ? $this->sharedGet($path) : file_get_contents($path);
         }
 
-        throw new FileNotFoundException("File does not exist at path {$path}.");
+        throw new FileNotFoundException("File does not exist at path {$path}");
     }
 
     /**
@@ -97,7 +95,7 @@ class Filesystem
             return require $path;
         }
 
-        throw new FileNotFoundException("File does not exist at path {$path}.");
+        throw new FileNotFoundException("File does not exist at path {$path}");
     }
 
     /**
@@ -253,7 +251,7 @@ class Filesystem
     }
 
     /**
-     * Create a symlink to the target file or directory. On Windows, a hard link is created if the target is a file.
+     * Create a hard link to the target file or directory.
      *
      * @param  string  $target
      * @param  string  $link
@@ -312,23 +310,6 @@ class Filesystem
     public function extension($path)
     {
         return pathinfo($path, PATHINFO_EXTENSION);
-    }
-
-    /**
-     * Guess the file extension from the mime-type of a given file.
-     *
-     * @param  string  $path
-     * @return string|null
-     */
-    public function guessExtension($path)
-    {
-        if (! class_exists(MimeTypes::class)) {
-            throw new RuntimeException(
-                'To enable support for guessing extensions, please install the symfony/mime package.'
-            );
-        }
-
-        return (new MimeTypes)->getExtensions($this->mimeType($path))[0] ?? null;
     }
 
     /**
@@ -423,7 +404,7 @@ class Filesystem
      * Find path names matching a given pattern.
      *
      * @param  string  $pattern
-     * @param  int  $flags
+     * @param  int     $flags
      * @return array
      */
     public function glob($pattern, $flags = 0)
@@ -479,27 +460,12 @@ class Filesystem
     }
 
     /**
-     * Ensure a directory exists.
-     *
-     * @param  string  $path
-     * @param  int  $mode
-     * @param  bool  $recursive
-     * @return void
-     */
-    public function ensureDirectoryExists($path, $mode = 0755, $recursive = true)
-    {
-        if (! $this->isDirectory($path)) {
-            $this->makeDirectory($path, $mode, $recursive);
-        }
-    }
-
-    /**
      * Create a directory.
      *
      * @param  string  $path
-     * @param  int  $mode
-     * @param  bool  $recursive
-     * @param  bool  $force
+     * @param  int     $mode
+     * @param  bool    $recursive
+     * @param  bool    $force
      * @return bool
      */
     public function makeDirectory($path, $mode = 0755, $recursive = false, $force = false)
@@ -547,7 +513,9 @@ class Filesystem
         // If the destination directory does not actually exist, we will go ahead and
         // create it recursively, which just gets the destination prepared to copy
         // the files over. Once we make the directory we'll proceed the copying.
-        $this->ensureDirectoryExists($destination, 0777);
+        if (! $this->isDirectory($destination)) {
+            $this->makeDirectory($destination, 0777, true);
+        }
 
         $items = new FilesystemIterator($directory, $options);
 
@@ -584,7 +552,7 @@ class Filesystem
      * The directory itself may be optionally preserved.
      *
      * @param  string  $directory
-     * @param  bool  $preserve
+     * @param  bool    $preserve
      * @return bool
      */
     public function deleteDirectory($directory, $preserve = false)

@@ -18,9 +18,6 @@ buttonBG($color = green)
 button
   buttonBG(red)
 
-.blue-button
-  buttonBG(blue)
-
 #content, .content
   font Tahoma, Chunkfive, sans-serif
   background url('hatch.png')

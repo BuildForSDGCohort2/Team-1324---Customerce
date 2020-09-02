@@ -105,7 +105,7 @@ class MySqlBuilder extends Builder
      *
      * @return array
      */
-    public function getAllViews()
+    protected function getAllViews()
     {
         return $this->connection->select(
             $this->grammar->compileGetAllViews()

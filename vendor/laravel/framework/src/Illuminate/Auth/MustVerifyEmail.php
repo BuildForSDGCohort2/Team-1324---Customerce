@@ -2,8 +2,6 @@
 
 namespace Illuminate\Auth;
 
-use Illuminate\Auth\Notifications\VerifyEmail;
-
 trait MustVerifyEmail
 {
     /**
@@ -35,7 +33,7 @@ trait MustVerifyEmail
      */
     public function sendEmailVerificationNotification()
     {
-        $this->notify(new VerifyEmail);
+        $this->notify(new Notifications\VerifyEmail);
     }
 
     /**

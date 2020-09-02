@@ -3,8 +3,8 @@
 namespace Illuminate\View\Engines;
 
 use ErrorException;
+use Exception;
 use Illuminate\View\Compilers\CompilerInterface;
-use Throwable;
 
 class CompilerEngine extends PhpEngine
 {
@@ -37,7 +37,7 @@ class CompilerEngine extends PhpEngine
      * Get the evaluated contents of the view.
      *
      * @param  string  $path
-     * @param  array  $data
+     * @param  array   $data
      * @return string
      */
     public function get($path, array $data = [])
@@ -51,10 +51,12 @@ class CompilerEngine extends PhpEngine
             $this->compiler->compile($path);
         }
 
+        $compiled = $this->compiler->getCompiledPath($path);
+
         // Once we have the path to the compiled file, we will evaluate the paths with
         // typical PHP just like any other templates. We also keep a stack of views
         // which have been rendered for right exception messages to be generated.
-        $results = $this->evaluatePath($this->compiler->getCompiledPath($path), $data);
+        $results = $this->evaluatePath($compiled, $data);
 
         array_pop($this->lastCompiled);
 
@@ -64,13 +66,13 @@ class CompilerEngine extends PhpEngine
     /**
      * Handle a view exception.
      *
-     * @param  \Throwable  $e
+     * @param  \Exception  $e
      * @param  int  $obLevel
      * @return void
      *
-     * @throws \Throwable
+     * @throws \Exception
      */
-    protected function handleViewException(Throwable $e, $obLevel)
+    protected function handleViewException(Exception $e, $obLevel)
     {
         $e = new ErrorException($this->getMessage($e), 0, 1, $e->getFile(), $e->getLine(), $e);
 
@@ -80,10 +82,10 @@ class CompilerEngine extends PhpEngine
     /**
      * Get the exception message for an exception.
      *
-     * @param  \Throwable  $e
+     * @param  \Exception  $e
      * @return string
      */
-    protected function getMessage(Throwable $e)
+    protected function getMessage(Exception $e)
     {
         return $e->getMessage().' (View: '.realpath(last($this->lastCompiled)).')';
     }

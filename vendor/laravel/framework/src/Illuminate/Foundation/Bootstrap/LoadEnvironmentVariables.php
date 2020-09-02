@@ -48,14 +48,12 @@ class LoadEnvironmentVariables
             }
         }
 
-        $environment = Env::get('APP_ENV');
-
-        if (! $environment) {
+        if (! env('APP_ENV')) {
             return;
         }
 
         $this->setEnvironmentFilePath(
-            $app, $app->environmentFile().'.'.$environment
+            $app, $app->environmentFile().'.'.env('APP_ENV')
         );
     }
 
@@ -86,9 +84,9 @@ class LoadEnvironmentVariables
     protected function createDotenv($app)
     {
         return Dotenv::create(
-            Env::getRepository(),
             $app->environmentPath(),
-            $app->environmentFile()
+            $app->environmentFile(),
+            Env::getFactory()
         );
     }
 
@@ -105,6 +103,6 @@ class LoadEnvironmentVariables
         $output->writeln('The environment file is invalid!');
         $output->writeln($e->getMessage());
 
-        exit(1);
+        die(1);
     }
 }

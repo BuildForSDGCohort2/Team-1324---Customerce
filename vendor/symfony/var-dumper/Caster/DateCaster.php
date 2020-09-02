@@ -17,14 +17,12 @@ use Symfony\Component\VarDumper\Cloner\Stub;
  * Casts DateTimeInterface related classes to array representation.
  *
  * @author Dany Maillard <danymaillard93b@gmail.com>
- *
- * @final
  */
 class DateCaster
 {
     private const PERIOD_LIMIT = 3;
 
-    public static function castDateTime(\DateTimeInterface $d, array $a, Stub $stub, bool $isNested, int $filter)
+    public static function castDateTime(\DateTimeInterface $d, array $a, Stub $stub, $isNested, $filter)
     {
         $prefix = Caster::PREFIX_VIRTUAL;
         $location = $d->getTimezone()->getLocation();
@@ -35,11 +33,7 @@ class DateCaster
             .($location ? ($d->format('I') ? "\nDST On" : "\nDST Off") : '')
         ;
 
-        unset(
-            $a[Caster::PREFIX_DYNAMIC.'date'],
-            $a[Caster::PREFIX_DYNAMIC.'timezone'],
-            $a[Caster::PREFIX_DYNAMIC.'timezone_type']
-        );
+        $a = [];
         $a[$prefix.'date'] = new ConstStub(self::formatDateTime($d, $location ? ' e (P)' : ' P'), $title);
 
         $stub->class .= $d->format(' @U');
@@ -47,7 +41,7 @@ class DateCaster
         return $a;
     }
 
-    public static function castInterval(\DateInterval $interval, array $a, Stub $stub, bool $isNested, int $filter)
+    public static function castInterval(\DateInterval $interval, array $a, Stub $stub, $isNested, $filter)
     {
         $now = new \DateTimeImmutable();
         $numberOfSeconds = $now->add($interval)->getTimestamp() - $now->getTimestamp();
@@ -58,7 +52,7 @@ class DateCaster
         return $filter & Caster::EXCLUDE_VERBOSE ? $i : $i + $a;
     }
 
-    private static function formatInterval(\DateInterval $i): string
+    private static function formatInterval(\DateInterval $i)
     {
         $format = '%R ';
 
@@ -75,7 +69,7 @@ class DateCaster
         return $i->format(rtrim($format));
     }
 
-    public static function castTimeZone(\DateTimeZone $timeZone, array $a, Stub $stub, bool $isNested, int $filter)
+    public static function castTimeZone(\DateTimeZone $timeZone, array $a, Stub $stub, $isNested, $filter)
     {
         $location = $timeZone->getLocation();
         $formatted = (new \DateTime('now', $timeZone))->format($location ? 'e (P)' : 'P');
@@ -86,19 +80,21 @@ class DateCaster
         return $filter & Caster::EXCLUDE_VERBOSE ? $z : $z + $a;
     }
 
-    public static function castPeriod(\DatePeriod $p, array $a, Stub $stub, bool $isNested, int $filter)
+    public static function castPeriod(\DatePeriod $p, array $a, Stub $stub, $isNested, $filter)
     {
         $dates = [];
-        foreach (clone $p as $i => $d) {
-            if (self::PERIOD_LIMIT === $i) {
-                $now = new \DateTimeImmutable();
-                $dates[] = sprintf('%s more', ($end = $p->getEndDate())
-                    ? ceil(($end->format('U.u') - $d->format('U.u')) / ((int) $now->add($p->getDateInterval())->format('U.u') - (int) $now->format('U.u')))
-                    : $p->recurrences - $i
-                );
-                break;
+        if (\PHP_VERSION_ID >= 70107) { // see https://bugs.php.net/74639
+            foreach (clone $p as $i => $d) {
+                if (self::PERIOD_LIMIT === $i) {
+                    $now = new \DateTimeImmutable();
+                    $dates[] = sprintf('%s more', ($end = $p->getEndDate())
+                        ? ceil(($end->format('U.u') - $d->format('U.u')) / ((int) $now->add($p->getDateInterval())->format('U.u') - (int) $now->format('U.u')))
+                        : $p->recurrences - $i
+                    );
+                    break;
+                }
+                $dates[] = sprintf('%s) %s', $i + 1, self::formatDateTime($d));
             }
-            $dates[] = sprintf('%s) %s', $i + 1, self::formatDateTime($d));
         }
 
         $period = sprintf(
@@ -114,12 +110,12 @@ class DateCaster
         return $filter & Caster::EXCLUDE_VERBOSE ? $p : $p + $a;
     }
 
-    private static function formatDateTime(\DateTimeInterface $d, string $extra = ''): string
+    private static function formatDateTime(\DateTimeInterface $d, $extra = '')
     {
         return $d->format('Y-m-d H:i:'.self::formatSeconds($d->format('s'), $d->format('u')).$extra);
     }
 
-    private static function formatSeconds(string $s, string $us): string
+    private static function formatSeconds($s, $us)
     {
         return sprintf('%02d.%s', $s, 0 === ($len = \strlen($t = rtrim($us, '0'))) ? '0' : ($len <= 3 ? str_pad($t, 3, '0') : $us));
     }

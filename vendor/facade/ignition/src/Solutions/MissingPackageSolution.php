@@ -2,12 +2,12 @@
 
 namespace Facade\Ignition\Solutions;
 
-use Facade\Ignition\Support\Packagist\Package;
 use Facade\IgnitionContracts\Solution;
+use Facade\Ignition\Support\Packagist\Package;
 
 class MissingPackageSolution implements Solution
 {
-    /** @var Package */
+    /** @var \Facade\Flare\Support\Packagist\Package */
     protected $possiblePackage;
 
     public function __construct(Package $possiblePackage)

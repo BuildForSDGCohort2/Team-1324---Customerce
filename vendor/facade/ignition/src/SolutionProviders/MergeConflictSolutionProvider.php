@@ -2,17 +2,18 @@
 
 namespace Facade\Ignition\SolutionProviders;
 
+use Throwable;
+use ParseError;
+use Illuminate\Support\Str;
 use Facade\IgnitionContracts\BaseSolution;
 use Facade\IgnitionContracts\HasSolutionsForThrowable;
-use Illuminate\Support\Str;
-use ParseError;
-use Throwable;
+use Symfony\Component\Debug\Exception\FatalThrowableError;
 
 class MergeConflictSolutionProvider implements HasSolutionsForThrowable
 {
     public function canSolve(Throwable $throwable): bool
     {
-        if (! ($throwable instanceof ParseError)) {
+        if (! ($throwable instanceof FatalThrowableError || $throwable instanceof ParseError)) {
             return false;
         }
 

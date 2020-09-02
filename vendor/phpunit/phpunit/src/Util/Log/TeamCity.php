@@ -21,6 +21,7 @@ use PHPUnit\Framework\Warning;
 use PHPUnit\TextUI\ResultPrinter;
 use PHPUnit\Util\Exception;
 use PHPUnit\Util\Filter;
+use ReflectionClass;
 use SebastianBergmann\Comparator\ComparisonFailure;
 
 /**
@@ -48,7 +49,7 @@ final class TeamCity extends ResultPrinter
      */
     public function printResult(TestResult $result): void
     {
-        $this->printHeader($result);
+        $this->printHeader();
         $this->printFooter($result);
     }
 
@@ -356,8 +357,7 @@ final class TeamCity extends ResultPrinter
     private static function getFileName($className): string
     {
         try {
-            return (new \ReflectionClass($className))->getFileName();
-            // @codeCoverageIgnoreStart
+            return (new ReflectionClass($className))->getFileName();
         } catch (\ReflectionException $e) {
             throw new Exception(
                 $e->getMessage(),
@@ -365,7 +365,6 @@ final class TeamCity extends ResultPrinter
                 $e
             );
         }
-        // @codeCoverageIgnoreEnd
     }
 
     /**

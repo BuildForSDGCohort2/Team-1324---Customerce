@@ -2,8 +2,8 @@
 
 namespace Facade\Ignition\Solutions;
 
-use Facade\IgnitionContracts\RunnableSolution;
 use Illuminate\Support\Facades\Artisan;
+use Facade\IgnitionContracts\RunnableSolution;
 
 class GenerateAppKeySolution implements RunnableSolution
 {

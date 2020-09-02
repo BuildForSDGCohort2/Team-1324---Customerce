@@ -113,12 +113,12 @@ trait BuildsQueries
     }
 
     /**
-     * Execute a callback over each item while chunking by ID.
+     * Execute a callback over each item while chunking by id.
      *
      * @param  callable  $callback
      * @param  int  $count
-     * @param  string|null  $column
-     * @param  string|null  $alias
+     * @param  string  $column
+     * @param  string  $alias
      * @return bool
      */
     public function eachById(callable $callback, $count = 1000, $column = null, $alias = null)
@@ -135,7 +135,7 @@ trait BuildsQueries
     /**
      * Execute the query and get the first result.
      *
-     * @param  array|string  $columns
+     * @param  array  $columns
      * @return \Illuminate\Database\Eloquent\Model|object|static|null
      */
     public function first($columns = ['*'])
@@ -166,7 +166,7 @@ trait BuildsQueries
      * Pass the query to a given callback.
      *
      * @param  callable  $callback
-     * @return $this
+     * @return \Illuminate\Database\Query\Builder
      */
     public function tap($callback)
     {
@@ -213,8 +213,8 @@ trait BuildsQueries
      * Create a new simple paginator instance.
      *
      * @param  \Illuminate\Support\Collection  $items
-     * @param  int  $perPage
-     * @param  int  $currentPage
+     * @param  int $perPage
+     * @param  int $currentPage
      * @param  array  $options
      * @return \Illuminate\Pagination\Paginator
      */

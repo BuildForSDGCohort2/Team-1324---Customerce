@@ -12,7 +12,6 @@
 namespace Monolog\Handler;
 
 use Monolog\Logger;
-use Monolog\Formatter\FormatterInterface;
 
 /**
  * Handler to only pass log messages when a certain threshold of number of messages is reached.
@@ -34,7 +33,7 @@ use Monolog\Formatter\FormatterInterface;
  *
  * @author Kris Buist <krisbuist@gmail.com>
  */
-class OverflowHandler extends AbstractHandler implements FormattableHandlerInterface
+class OverflowHandler extends AbstractHandler
 {
     /** @var HandlerInterface */
     private $handler;
@@ -61,13 +60,13 @@ class OverflowHandler extends AbstractHandler implements FormattableHandlerInter
     /**
      * @param HandlerInterface $handler
      * @param int[]            $thresholdMap Dictionary of logger level => threshold
-     * @param int|string       $level        The minimum logging level at which this handler will be triggered
+     * @param int              $level
      * @param bool             $bubble
      */
     public function __construct(
         HandlerInterface $handler,
         array $thresholdMap = [],
-        $level = Logger::DEBUG,
+        int $level = Logger::DEBUG,
         bool $bubble = true
     ) {
         $this->handler = $handler;
@@ -124,23 +123,5 @@ class OverflowHandler extends AbstractHandler implements FormattableHandlerInter
         $this->handler->handle($record);
 
         return false === $this->bubble;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setFormatter(FormatterInterface $formatter): HandlerInterface
-    {
-        $this->handler->setFormatter($formatter);
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getFormatter(): FormatterInterface
-    {
-        return $this->handler->getFormatter();
     }
 }

@@ -22,7 +22,7 @@ return [
     |
     | This value determines the "environment" your application is currently
     | running in. This may determine how you prefer to configure various
-    | services the application utilizes. Set this in your ".env" file.
+    | services your application utilizes. Set this in your ".env" file.
     |
     */
 
@@ -39,7 +39,7 @@ return [
     |
     */
 
-    'debug' => (bool) env('APP_DEBUG', false),
+    'debug' => env('APP_DEBUG', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -53,8 +53,6 @@ return [
     */
 
     'url' => env('APP_URL', 'http://localhost'),
-
-    'asset_url' => env('ASSET_URL', null),
 
     /*
     |--------------------------------------------------------------------------
@@ -94,19 +92,6 @@ return [
     */
 
     'fallback_locale' => 'en',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Faker Locale
-    |--------------------------------------------------------------------------
-    |
-    | This locale will be used by the Faker PHP library when generating fake
-    | data for your database seeds. For example, this will be used to get
-    | localized telephone numbers, street address information and more.
-    |
-    */
-
-    'faker_locale' => 'en_US',
 
     /*
     |--------------------------------------------------------------------------
@@ -165,15 +150,25 @@ return [
         /*
          * Package Service Providers...
          */
+        Brotzka\DotenvEditor\DotenvEditorServiceProvider::class,
 
         /*
          * Application Service Providers...
          */
-        App\Providers\AppServiceProvider::class,
-        App\Providers\AuthServiceProvider::class,
-        // App\Providers\BroadcastServiceProvider::class,
-        App\Providers\EventServiceProvider::class,
-        App\Providers\RouteServiceProvider::class,
+        CreatyDev\App\Providers\AppServiceProvider::class,
+        CreatyDev\App\Providers\AuthServiceProvider::class,
+        // CreatyDev\App\Providers\BroadcastServiceProvider::class,
+        CreatyDev\App\Providers\EventServiceProvider::class,
+        CreatyDev\App\Providers\RouteServiceProvider::class,
+        CreatyDev\App\Providers\HelperServiceProvider::class,
+        CreatyDev\App\Providers\ComposerServiceProvider::class,
+        CreatyDev\App\Providers\RoleServiceProvider::class,
+        CreatyDev\App\Providers\PermissionsServiceProvider::class,
+        CreatyDev\App\Providers\StripeServiceProvider::class,
+        CreatyDev\App\Providers\BladeServiceProvider::class,
+        CreatyDev\App\Providers\TwoFactorServiceProvider::class,
+        CreatyDev\App\Providers\TenantServiceProvider::class,
+        CreatyDev\App\Providers\UrlSchemeServiceProvider::class,
 
     ],
 
@@ -191,7 +186,6 @@ return [
     'aliases' => [
 
         'App' => Illuminate\Support\Facades\App::class,
-        'Arr' => Illuminate\Support\Arr::class,
         'Artisan' => Illuminate\Support\Facades\Artisan::class,
         'Auth' => Illuminate\Support\Facades\Auth::class,
         'Blade' => Illuminate\Support\Facades\Blade::class,
@@ -207,7 +201,6 @@ return [
         'File' => Illuminate\Support\Facades\File::class,
         'Gate' => Illuminate\Support\Facades\Gate::class,
         'Hash' => Illuminate\Support\Facades\Hash::class,
-        'Http' => Illuminate\Support\Facades\Http::class,
         'Lang' => Illuminate\Support\Facades\Lang::class,
         'Log' => Illuminate\Support\Facades\Log::class,
         'Mail' => Illuminate\Support\Facades\Mail::class,
@@ -222,10 +215,10 @@ return [
         'Schema' => Illuminate\Support\Facades\Schema::class,
         'Session' => Illuminate\Support\Facades\Session::class,
         'Storage' => Illuminate\Support\Facades\Storage::class,
-        'Str' => Illuminate\Support\Str::class,
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
+        'DotenvEditor' => Brotzka\DotenvEditor\DotenvEditorFacade::class,
 
     ],
 

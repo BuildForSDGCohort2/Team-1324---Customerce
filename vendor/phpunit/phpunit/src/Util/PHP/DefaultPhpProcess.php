@@ -144,7 +144,7 @@ class DefaultPhpProcess extends AbstractPhpProcess
 
                         $line = \fread($pipe, 8192);
 
-                        if ($line === '' || $line === false) {
+                        if ($line === '') {
                             \fclose($pipes[$pipeOffset]);
 
                             unset($pipes[$pipeOffset]);

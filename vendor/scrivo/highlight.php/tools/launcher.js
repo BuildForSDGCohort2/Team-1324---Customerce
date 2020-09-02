@@ -9,8 +9,7 @@ dojoConfig = {
     location: "dojox"
   }],
   deps: ["export"],
-  highlightJsDir: __dirname + "/lib_highlight/build/lib",
-  cwd: __dirname,
+  highlightJsDir: __dirname + "/lib_highlight/build/lib/"
 };
 
 require("./lib_dojo/dojo/dojo.js");

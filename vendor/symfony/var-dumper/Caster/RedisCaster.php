@@ -17,8 +17,6 @@ use Symfony\Component\VarDumper\Cloner\Stub;
  * Casts Redis class from ext-redis to array representation.
  *
  * @author Nicolas Grekas <p@tchwork.com>
- *
- * @final
  */
 class RedisCaster
 {
@@ -46,7 +44,7 @@ class RedisCaster
         \RedisCluster::FAILOVER_DISTRIBUTE_SLAVES => 'DISTRIBUTE_SLAVES',
     ];
 
-    public static function castRedis(\Redis $c, array $a, Stub $stub, bool $isNested)
+    public static function castRedis(\Redis $c, array $a, Stub $stub, $isNested)
     {
         $prefix = Caster::PREFIX_VIRTUAL;
 
@@ -72,7 +70,7 @@ class RedisCaster
         ];
     }
 
-    public static function castRedisArray(\RedisArray $c, array $a, Stub $stub, bool $isNested)
+    public static function castRedisArray(\RedisArray $c, array $a, Stub $stub, $isNested)
     {
         $prefix = Caster::PREFIX_VIRTUAL;
 
@@ -84,7 +82,7 @@ class RedisCaster
         ];
     }
 
-    public static function castRedisCluster(\RedisCluster $c, array $a, Stub $stub, bool $isNested)
+    public static function castRedisCluster(\RedisCluster $c, array $a, Stub $stub, $isNested)
     {
         $prefix = Caster::PREFIX_VIRTUAL;
         $failover = $c->getOption(\RedisCluster::OPT_SLAVE_FAILOVER);

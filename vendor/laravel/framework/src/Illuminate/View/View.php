@@ -4,6 +4,7 @@ namespace Illuminate\View;
 
 use ArrayAccess;
 use BadMethodCallException;
+use Exception;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Contracts\Support\MessageProvider;
@@ -13,7 +14,6 @@ use Illuminate\Contracts\View\View as ViewContract;
 use Illuminate\Support\MessageBag;
 use Illuminate\Support\Str;
 use Illuminate\Support\Traits\Macroable;
-use Illuminate\Support\ViewErrorBag;
 use Throwable;
 
 class View implements ArrayAccess, Htmlable, ViewContract
@@ -98,6 +98,10 @@ class View implements ArrayAccess, Htmlable, ViewContract
             $this->factory->flushStateIfDoneRendering();
 
             return ! is_null($response) ? $response : $contents;
+        } catch (Exception $e) {
+            $this->factory->flushState();
+
+            throw $e;
         } catch (Throwable $e) {
             $this->factory->flushState();
 
@@ -175,7 +179,7 @@ class View implements ArrayAccess, Htmlable, ViewContract
      * Add a piece of data to the view.
      *
      * @param  string|array  $key
-     * @param  mixed  $value
+     * @param  mixed   $value
      * @return $this
      */
     public function with($key, $value = null)
@@ -194,7 +198,7 @@ class View implements ArrayAccess, Htmlable, ViewContract
      *
      * @param  string  $key
      * @param  string  $view
-     * @param  array  $data
+     * @param  array   $data
      * @return $this
      */
     public function nest($key, $view, array $data = [])
@@ -206,27 +210,25 @@ class View implements ArrayAccess, Htmlable, ViewContract
      * Add validation errors to the view.
      *
      * @param  \Illuminate\Contracts\Support\MessageProvider|array  $provider
-     * @param  string  $bag
      * @return $this
      */
-    public function withErrors($provider, $bag = 'default')
+    public function withErrors($provider)
     {
-        return $this->with('errors', (new ViewErrorBag)->put(
-            $bag, $this->formatErrors($provider)
-        ));
+        $this->with('errors', $this->formatErrors($provider));
+
+        return $this;
     }
 
     /**
-     * Parse the given errors into an appropriate value.
+     * Format the given message provider into a MessageBag.
      *
-     * @param  \Illuminate\Contracts\Support\MessageProvider|array|string  $provider
+     * @param  \Illuminate\Contracts\Support\MessageProvider|array  $provider
      * @return \Illuminate\Support\MessageBag
      */
     protected function formatErrors($provider)
     {
         return $provider instanceof MessageProvider
-                        ? $provider->getMessageBag()
-                        : new MessageBag((array) $provider);
+                        ? $provider->getMessageBag() : new MessageBag((array) $provider);
     }
 
     /**
@@ -326,7 +328,7 @@ class View implements ArrayAccess, Htmlable, ViewContract
      * Set a piece of data on the view.
      *
      * @param  string  $key
-     * @param  mixed  $value
+     * @param  mixed   $value
      * @return void
      */
     public function offsetSet($key, $value)
@@ -360,7 +362,7 @@ class View implements ArrayAccess, Htmlable, ViewContract
      * Set a piece of data on the view.
      *
      * @param  string  $key
-     * @param  mixed  $value
+     * @param  mixed   $value
      * @return void
      */
     public function __set($key, $value)
@@ -394,7 +396,7 @@ class View implements ArrayAccess, Htmlable, ViewContract
      * Dynamically bind parameters to the view.
      *
      * @param  string  $method
-     * @param  array  $parameters
+     * @param  array   $parameters
      * @return \Illuminate\View\View
      *
      * @throws \BadMethodCallException

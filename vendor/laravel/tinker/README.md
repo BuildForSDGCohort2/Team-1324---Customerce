@@ -11,22 +11,20 @@
 
 Laravel Tinker is a powerful REPL for the Laravel framework.
 
-## Official Documentation
+## Installation
 
-Documentation for Tinker can be found on the [Laravel website](https://laravel.com/docs/artisan#tinker).
+To get started with Laravel Tinker, simply run:
 
-## Contributing
+    composer require laravel/tinker
 
-Thank you for considering contributing to Tinker! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Basic Usage
 
-## Code of Conduct
+From your console, execute the `php artisan tinker` command.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Dispatching Jobs
 
-## Security Vulnerabilities
-
-Please review [our security policy](https://github.com/laravel/tinker/security/policy) on how to report security vulnerabilities.
+The `dispatch` helper function and `dispatch` method on the `Dispatchable` class depends on garbage collection to place the job on the queue. Therefore, when using `tinker`, you should use `Bus::dispatch` or `Queue::push` to dispatch jobs.
 
 ## License
 
-Laravel Tinker is open-sourced software licensed under the [MIT license](LICENSE.md).
+Laravel Tinker is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).

@@ -2,8 +2,8 @@
 
 namespace Facade\FlareClient\Middleware;
 
-use Facade\FlareClient\Glows\Recorder;
 use Facade\FlareClient\Report;
+use Facade\FlareClient\Glows\Recorder;
 
 class AddGlows
 {

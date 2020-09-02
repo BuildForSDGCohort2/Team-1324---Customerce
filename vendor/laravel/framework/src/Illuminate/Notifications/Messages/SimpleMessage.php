@@ -64,13 +64,6 @@ class SimpleMessage
     public $actionUrl;
 
     /**
-     * The name of the mailer that should send the notification.
-     *
-     * @var string
-     */
-    public $mailer;
-
-    /**
      * Indicate that the notification gives information about a successful operation.
      *
      * @return $this
@@ -211,19 +204,6 @@ class SimpleMessage
     }
 
     /**
-     * Set the name of the mailer that should send the notification.
-     *
-     * @param  string  $mailer
-     * @return $this
-     */
-    public function mailer($mailer)
-    {
-        $this->mailer = $mailer;
-
-        return $this;
-    }
-
-    /**
      * Get an array representation of the message.
      *
      * @return array
@@ -239,7 +219,6 @@ class SimpleMessage
             'outroLines' => $this->outroLines,
             'actionText' => $this->actionText,
             'actionUrl' => $this->actionUrl,
-            'displayableActionUrl' => str_replace(['mailto:', 'tel:'], '', $this->actionUrl),
         ];
     }
 }

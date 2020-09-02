@@ -2,15 +2,15 @@
 
 namespace Facade\Ignition\SolutionProviders;
 
+use Throwable;
+use InvalidArgumentException;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Application;
+use Facade\IgnitionContracts\BaseSolution;
 use Facade\Ignition\Exceptions\ViewException;
 use Facade\Ignition\Support\StringComparator;
-use Facade\IgnitionContracts\BaseSolution;
 use Facade\IgnitionContracts\HasSolutionsForThrowable;
-use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Route;
-use InvalidArgumentException;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
-use Throwable;
 
 class RouteNotDefinedSolutionProvider implements HasSolutionsForThrowable
 {
@@ -30,7 +30,7 @@ class RouteNotDefinedSolutionProvider implements HasSolutionsForThrowable
             }
         }
 
-        return (bool)preg_match(self::REGEX, $throwable->getMessage(), $matches);
+        return preg_match(self::REGEX, $throwable->getMessage(), $matches);
     }
 
     public function getSolutions(Throwable $throwable): array

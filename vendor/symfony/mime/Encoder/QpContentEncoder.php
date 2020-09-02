@@ -13,6 +13,8 @@ namespace Symfony\Component\Mime\Encoder;
 
 /**
  * @author Lars Strojny
+ *
+ * @experimental in 4.3
  */
 final class QpContentEncoder implements ContentEncoderInterface
 {
@@ -23,6 +25,10 @@ final class QpContentEncoder implements ContentEncoderInterface
         }
 
         // we don't use PHP stream filters here as the content should be small enough
+        if (stream_get_meta_data($stream)['seekable'] ?? false) {
+            rewind($stream);
+        }
+
         yield $this->encodeString(stream_get_contents($stream), 'utf-8', 0, $maxLineLength);
     }
 

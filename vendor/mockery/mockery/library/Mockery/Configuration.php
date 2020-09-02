@@ -41,11 +41,6 @@ class Configuration
     protected $_allowMockingMethodsUnnecessarily = true;
 
     /**
-     * @var QuickDefinitionsConfiguration
-     */
-    protected $_quickDefinitionsConfiguration;
-
-    /**
      * Parameter map for use with PHP internal classes.
      *
      * @var array
@@ -61,11 +56,6 @@ class Configuration
      * @see https://github.com/mockery/mockery/issues/268
      */
     protected $_reflectionCacheEnabled = true;
-
-    public function __construct()
-    {
-        $this->_quickDefinitionsConfiguration = new QuickDefinitionsConfiguration();
-    }
 
     /**
      * Set boolean to allow/prevent mocking of non-existent methods
@@ -88,15 +78,15 @@ class Configuration
     }
 
     /**
+     * @deprecated
+     *
      * Set boolean to allow/prevent unnecessary mocking of methods
      *
      * @param bool $flag
-     *
-     * @deprecated since 1.4.0
      */
     public function allowMockingMethodsUnnecessarily($flag = true)
     {
-        @trigger_error(sprintf("The %s method is deprecated and will be removed in a future version of Mockery", __METHOD__), E_USER_DEPRECATED);
+        trigger_error(sprintf("The %s method is deprecated and will be removed in a future version of Mockery", __METHOD__), E_USER_DEPRECATED);
 
         $this->_allowMockingMethodsUnnecessarily = (bool) $flag;
     }
@@ -105,12 +95,10 @@ class Configuration
      * Return flag indicating whether mocking non-existent methods allowed
      *
      * @return bool
-     *
-     * @deprecated since 1.4.0
      */
     public function mockingMethodsUnnecessarilyAllowed()
     {
-        @trigger_error(sprintf("The %s method is deprecated and will be removed in a future version of Mockery", __METHOD__), E_USER_DEPRECATED);
+        trigger_error(sprintf("The %s method is deprecated and will be removed in a future version of Mockery", __METHOD__), E_USER_DEPRECATED);
 
         return $this->_allowMockingMethodsUnnecessarily;
     }
@@ -125,10 +113,6 @@ class Configuration
      */
     public function setInternalClassMethodParamMap($class, $method, array $map)
     {
-        if (\PHP_MAJOR_VERSION > 7) {
-            throw new \LogicException('Internal class parameter overriding is not available in PHP 8. Incompatible signatures have been reclassified as fatal errors.');
-        }
-
         if (!isset($this->_internalClassParamMap[strtolower($class)])) {
             $this->_internalClassParamMap[strtolower($class)] = array();
         }
@@ -136,7 +120,7 @@ class Configuration
     }
 
     /**
-     * Remove all overridden parameter maps from internal PHP classes.
+     * Remove all overriden parameter maps from internal PHP classes.
      */
     public function resetInternalClassMethodParamMaps()
     {
@@ -146,7 +130,7 @@ class Configuration
     /**
      * Get the parameter map of an internal PHP class method
      *
-     * @return array|null
+     * @return array
      */
     public function getInternalClassMethodParamMap($class, $method)
     {
@@ -168,14 +152,6 @@ class Configuration
     public function getConstantsMap()
     {
         return $this->_constantsMap;
-    }
-
-    /**
-     * Returns the quick definitions configuration
-     */
-    public function getQuickDefinitions(): QuickDefinitionsConfiguration
-    {
-        return $this->_quickDefinitionsConfiguration;
     }
 
     /**

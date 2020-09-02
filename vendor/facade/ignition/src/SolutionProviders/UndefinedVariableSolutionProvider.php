@@ -2,12 +2,12 @@
 
 namespace Facade\Ignition\SolutionProviders;
 
+use Throwable;
+use Facade\IgnitionContracts\BaseSolution;
 use Facade\Ignition\Exceptions\ViewException;
+use Facade\IgnitionContracts\HasSolutionsForThrowable;
 use Facade\Ignition\Solutions\MakeViewVariableOptionalSolution;
 use Facade\Ignition\Solutions\SuggestCorrectVariableNameSolution;
-use Facade\IgnitionContracts\BaseSolution;
-use Facade\IgnitionContracts\HasSolutionsForThrowable;
-use Throwable;
 
 class UndefinedVariableSolutionProvider implements HasSolutionsForThrowable
 {
@@ -40,11 +40,8 @@ class UndefinedVariableSolutionProvider implements HasSolutionsForThrowable
         return $solutions;
     }
 
-    protected function findCorrectVariableSolutions(
-        ViewException $throwable,
-        string $variableName,
-        string $viewFile
-    ): array {
+    protected function findCorrectVariableSolutions(Throwable $throwable, string $variableName, string $viewFile): array
+    {
         return collect($throwable->getViewData())->map(function ($value, $key) use ($variableName) {
             similar_text($variableName, $key, $percentage);
 
@@ -57,7 +54,7 @@ class UndefinedVariableSolutionProvider implements HasSolutionsForThrowable
             return $solution->isRunnable()
                 ? $solution
                 : BaseSolution::create($solution->getSolutionTitle())
-                    ->setSolutionDescription($solution->getSolutionDescription());
+                    ->setSolutionDescription($solution->getSolutionActionDescription());
         })->toArray();
     }
 
@@ -68,7 +65,7 @@ class UndefinedVariableSolutionProvider implements HasSolutionsForThrowable
         return $optionalSolution->isRunnable()
             ? $optionalSolution
             : BaseSolution::create($optionalSolution->getSolutionTitle())
-                ->setSolutionDescription($optionalSolution->getSolutionDescription());
+                ->setSolutionDescription($optionalSolution->getSolutionActionDescription());
     }
 
     protected function getNameAndView(Throwable $throwable): ?array
@@ -76,13 +73,10 @@ class UndefinedVariableSolutionProvider implements HasSolutionsForThrowable
         $pattern = '/Undefined variable: (.*?) \(View: (.*?)\)/';
 
         preg_match($pattern, $throwable->getMessage(), $matches);
-
         if (count($matches) === 3) {
-            [, $variableName, $viewFile] = $matches;
+            [$string, $variableName, $viewFile] = $matches;
 
             return compact('variableName', 'viewFile');
         }
-
-        return null;
     }
 }

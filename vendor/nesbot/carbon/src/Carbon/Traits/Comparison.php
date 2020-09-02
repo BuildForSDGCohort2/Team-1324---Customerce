@@ -10,9 +10,8 @@
  */
 namespace Carbon\Traits;
 
-use BadMethodCallException;
 use Carbon\CarbonInterface;
-use Carbon\Exceptions\BadComparisonUnitException;
+use Carbon\Exceptions\BadUnitException;
 use InvalidArgumentException;
 
 /**
@@ -23,11 +22,11 @@ use InvalidArgumentException;
  *
  * Depends on the following methods:
  *
- * @method static        resolveCarbon($date)
- * @method static        copy()
- * @method static        nowWithSameTz()
- * @method static static yesterday($timezone = null)
- * @method static static tomorrow($timezone = null)
+ * @method CarbonInterface        resolveCarbon($date)
+ * @method CarbonInterface        copy()
+ * @method CarbonInterface        nowWithSameTz()
+ * @method static CarbonInterface yesterday($timezone = null)
+ * @method static CarbonInterface tomorrow($timezone = null)
  */
 trait Comparison
 {
@@ -316,16 +315,12 @@ trait Comparison
     /**
      * Determines if the instance is between two others.
      *
-     * The third argument allow you to specify if bounds are included or not (true by default)
-     * but for when you including/excluding bounds may produce different results in your application,
-     * we recommend to use the explicit methods ->betweenIncluded() or ->betweenExcluded() instead.
-     *
      * @example
      * ```
      * Carbon::parse('2018-07-25')->between('2018-07-14', '2018-08-01'); // true
      * Carbon::parse('2018-07-25')->between('2018-08-01', '2018-08-20'); // false
-     * Carbon::parse('2018-07-25')->between('2018-07-25', '2018-08-01'); // true
-     * Carbon::parse('2018-07-25')->between('2018-07-25', '2018-08-01', false); // false
+     * Carbon::parse('2018-07-25')->between('2018-07-25', '2018-08-01'); // false
+     * Carbon::parse('2018-07-25')->between('2018-07-25', '2018-08-01', true); // true
      * ```
      *
      * @param \Carbon\Carbon|\DateTimeInterface|mixed $date1
@@ -348,26 +343,6 @@ trait Comparison
         }
 
         return $this->greaterThan($date1) && $this->lessThan($date2);
-    }
-
-    /**
-     * Determines if the instance is between two others, bounds included.
-     *
-     * @example
-     * ```
-     * Carbon::parse('2018-07-25')->betweenIncluded('2018-07-14', '2018-08-01'); // true
-     * Carbon::parse('2018-07-25')->betweenIncluded('2018-08-01', '2018-08-20'); // false
-     * Carbon::parse('2018-07-25')->betweenIncluded('2018-07-25', '2018-08-01'); // true
-     * ```
-     *
-     * @param \Carbon\Carbon|\DateTimeInterface|mixed $date1
-     * @param \Carbon\Carbon|\DateTimeInterface|mixed $date2
-     *
-     * @return bool
-     */
-    public function betweenIncluded($date1, $date2): bool
-    {
-        return $this->between($date1, $date2, true);
     }
 
     /**
@@ -397,8 +372,8 @@ trait Comparison
      * ```
      * Carbon::parse('2018-07-25')->isBetween('2018-07-14', '2018-08-01'); // true
      * Carbon::parse('2018-07-25')->isBetween('2018-08-01', '2018-08-20'); // false
-     * Carbon::parse('2018-07-25')->isBetween('2018-07-25', '2018-08-01'); // true
-     * Carbon::parse('2018-07-25')->isBetween('2018-07-25', '2018-08-01', false); // false
+     * Carbon::parse('2018-07-25')->isBetween('2018-07-25', '2018-08-01'); // false
+     * Carbon::parse('2018-07-25')->isBetween('2018-07-25', '2018-08-01', true); // true
      * ```
      *
      * @param \Carbon\Carbon|\DateTimeInterface|mixed $date1
@@ -570,6 +545,8 @@ trait Comparison
      * @param string                                        $format date formats to compare.
      * @param \Carbon\Carbon|\DateTimeInterface|string|null $date   instance to compare with or null to use current day.
      *
+     * @throws \InvalidArgumentException
+     *
      * @return bool
      */
     public function isSameAs($format, $date = null)
@@ -589,7 +566,7 @@ trait Comparison
      * @param string                                 $unit singular unit string
      * @param \Carbon\Carbon|\DateTimeInterface|null $date instance to compare with or null to use current day.
      *
-     * @throws BadComparisonUnitException
+     * @throws \InvalidArgumentException
      *
      * @return bool
      */
@@ -620,7 +597,7 @@ trait Comparison
             }
 
             if ($this->localStrictModeEnabled ?? static::isStrictModeEnabled()) {
-                throw new BadComparisonUnitException($unit);
+                throw new BadUnitException($unit);
             }
 
             return false;
@@ -640,7 +617,7 @@ trait Comparison
      *
      * @param string $unit The unit to test.
      *
-     * @throws BadMethodCallException
+     * @throws \BadMethodCallException
      *
      * @return bool
      */

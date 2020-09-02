@@ -36,14 +36,14 @@ trait Options
     /**
      * First day of week.
      *
-     * @var int|string
+     * @var int
      */
     protected static $weekStartsAt = CarbonInterface::MONDAY;
 
     /**
      * Last day of week.
      *
-     * @var int|string
+     * @var int
      */
     protected static $weekEndsAt = CarbonInterface::SUNDAY;
 
@@ -416,12 +416,6 @@ trait Options
         $infos = array_filter(get_object_vars($this), function ($var) {
             return $var;
         });
-
-        foreach (['dumpProperties', 'constructedObjectId'] as $property) {
-            if (isset($infos[$property])) {
-                unset($infos[$property]);
-            }
-        }
 
         // @codeCoverageIgnoreStart
 

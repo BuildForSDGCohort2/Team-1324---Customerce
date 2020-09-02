@@ -13,6 +13,9 @@
  * Authors:
  * - Ahmed Ali
  */
+\Symfony\Component\Translation\PluralizationRules::set(function ($number) {
+    return $number === 1 ? 0 : 1;
+}, 'dv');
 
 $months = [
     'ޖެނުއަރީ',
@@ -59,7 +62,6 @@ return [
     'after' => ':time ފަހުން',
     'before' => ':time ކުރި',
     'diff_yesterday' => 'އިއްޔެ',
-    'diff_today' => 'މިއަދު',
     'diff_tomorrow' => 'މާދަމާ',
     'formats' => [
         'LT' => 'HH:mm',

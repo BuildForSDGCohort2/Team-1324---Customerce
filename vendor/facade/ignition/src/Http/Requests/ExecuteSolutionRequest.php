@@ -2,10 +2,10 @@
 
 namespace Facade\Ignition\Http\Requests;
 
-use Facade\IgnitionContracts\RunnableSolution;
 use Facade\IgnitionContracts\Solution;
-use Facade\IgnitionContracts\SolutionProviderRepository;
 use Illuminate\Foundation\Http\FormRequest;
+use Facade\IgnitionContracts\RunnableSolution;
+use Facade\IgnitionContracts\SolutionProviderRepository;
 
 class ExecuteSolutionRequest extends FormRequest
 {
@@ -24,7 +24,6 @@ class ExecuteSolutionRequest extends FormRequest
 
         abort_if(is_null($solution), 404, 'Solution could not be found');
 
-        /** @var Solution */
         return $solution;
     }
 

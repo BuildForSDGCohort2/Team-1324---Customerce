@@ -85,7 +85,10 @@ class Grammar extends BaseGrammar
         $sql = [];
 
         foreach ($this->selectComponents as $component) {
-            if (isset($query->$component)) {
+            // To compile the query, we'll spin through each component of the query and
+            // see if that component exists. If it does we'll just call the compiler
+            // function for the component which is responsible for making the SQL.
+            if (isset($query->$component) && ! is_null($query->$component)) {
                 $method = 'compile'.ucfirst($component);
 
                 $sql[$component] = $this->$method($query, $query->$component);
@@ -364,24 +367,6 @@ class Grammar extends BaseGrammar
     }
 
     /**
-     * Compile a "between" where clause.
-     *
-     * @param  \Illuminate\Database\Query\Builder  $query
-     * @param  array  $where
-     * @return string
-     */
-    protected function whereBetweenColumns(Builder $query, $where)
-    {
-        $between = $where['not'] ? 'not between' : 'between';
-
-        $min = $this->wrap(reset($where['values']));
-
-        $max = $this->wrap(end($where['values']));
-
-        return $this->wrap($where['column']).' '.$between.' '.$min.' and '.$max;
-    }
-
-    /**
      * Compile a "where date" clause.
      *
      * @param  \Illuminate\Database\Query\Builder  $query
@@ -488,8 +473,8 @@ class Grammar extends BaseGrammar
     /**
      * Compile a where condition with a sub-select.
      *
-     * @param  \Illuminate\Database\Query\Builder  $query
-     * @param  array  $where
+     * @param  \Illuminate\Database\Query\Builder $query
+     * @param  array   $where
      * @return string
      */
     protected function whereSub(Builder $query, $where)
@@ -656,7 +641,7 @@ class Grammar extends BaseGrammar
     /**
      * Compile a single having clause.
      *
-     * @param  array  $having
+     * @param  array   $having
      * @return string
      */
     protected function compileHaving(array $having)
@@ -676,7 +661,7 @@ class Grammar extends BaseGrammar
     /**
      * Compile a basic having clause.
      *
-     * @param  array  $having
+     * @param  array   $having
      * @return string
      */
     protected function compileBasicHaving($having)
@@ -893,8 +878,6 @@ class Grammar extends BaseGrammar
      * @param  \Illuminate\Database\Query\Builder  $query
      * @param  array  $values
      * @return string
-     *
-     * @throws \RuntimeException
      */
     public function compileInsertOrIgnore(Builder $query, array $values)
     {
@@ -905,7 +888,7 @@ class Grammar extends BaseGrammar
      * Compile an insert and get ID statement into SQL.
      *
      * @param  \Illuminate\Database\Query\Builder  $query
-     * @param  array  $values
+     * @param  array   $values
      * @param  string  $sequence
      * @return string
      */
@@ -1130,7 +1113,7 @@ class Grammar extends BaseGrammar
      * Wrap a value in keyword identifiers.
      *
      * @param  \Illuminate\Database\Query\Expression|string  $value
-     * @param  bool  $prefixAlias
+     * @param  bool    $prefixAlias
      * @return string
      */
     public function wrap($value, $prefixAlias = false)
@@ -1161,8 +1144,6 @@ class Grammar extends BaseGrammar
      *
      * @param  string  $value
      * @return string
-     *
-     * @throws \RuntimeException
      */
     protected function wrapJsonSelector($value)
     {
@@ -1217,7 +1198,7 @@ class Grammar extends BaseGrammar
      */
     protected function wrapJsonPath($value, $delimiter = '->')
     {
-        $value = preg_replace("/([\\\\]+)?\\'/", "''", $value);
+        $value = preg_replace("/([\\\\]+)?\\'/", "\\'", $value);
 
         return '\'$."'.str_replace($delimiter, '"."', $value).'"\'';
     }
@@ -1236,7 +1217,7 @@ class Grammar extends BaseGrammar
     /**
      * Concatenate an array of segments, removing empties.
      *
-     * @param  array  $segments
+     * @param  array   $segments
      * @return string
      */
     protected function concatenate($segments)

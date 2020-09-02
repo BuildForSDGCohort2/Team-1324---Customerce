@@ -2,10 +2,10 @@
 
 namespace Facade\Ignition\SolutionProviders;
 
-use Facade\Ignition\Solutions\UseDefaultValetDbCredentialsSolution;
-use Facade\IgnitionContracts\HasSolutionsForThrowable;
-use Illuminate\Database\QueryException;
 use Throwable;
+use Illuminate\Database\QueryException;
+use Facade\IgnitionContracts\HasSolutionsForThrowable;
+use Facade\Ignition\Solutions\UseDefaultValetDbCredentialsSolution;
 
 class IncorrectValetDbCredentialsSolutionProvider implements HasSolutionsForThrowable
 {
@@ -13,7 +13,7 @@ class IncorrectValetDbCredentialsSolutionProvider implements HasSolutionsForThro
 
     public function canSolve(Throwable $throwable): bool
     {
-        if (PHP_OS !== 'Darwin') {
+        if (! PHP_OS === 'Darwin') {
             return false;
         }
 

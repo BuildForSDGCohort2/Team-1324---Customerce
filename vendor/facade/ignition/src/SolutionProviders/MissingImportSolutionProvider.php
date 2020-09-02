@@ -2,10 +2,10 @@
 
 namespace Facade\Ignition\SolutionProviders;
 
-use Facade\Ignition\Solutions\SuggestImportSolution;
-use Facade\Ignition\Support\ComposerClassMap;
-use Facade\IgnitionContracts\HasSolutionsForThrowable;
 use Throwable;
+use Facade\Ignition\Support\ComposerClassMap;
+use Facade\Ignition\Solutions\SuggestImportSolution;
+use Facade\IgnitionContracts\HasSolutionsForThrowable;
 
 class MissingImportSolutionProvider implements HasSolutionsForThrowable
 {

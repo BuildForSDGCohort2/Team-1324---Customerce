@@ -17,6 +17,8 @@ use Symfony\Component\Mime\MimeTypes;
 
 /**
  * @author Fabien Potencier <fabien@symfony.com>
+ *
+ * @experimental in 4.3
  */
 class DataPart extends TextPart
 {
@@ -56,12 +58,8 @@ class DataPart extends TextPart
             $contentType = self::$mimeTypes->getMimeTypes($ext)[0] ?? 'application/octet-stream';
         }
 
-        if (false === is_readable($path)) {
-            throw new InvalidArgumentException(sprintf('Path "%s" is not readable.', $path));
-        }
-        
         if (false === $handle = @fopen($path, 'r', false)) {
-            throw new InvalidArgumentException(sprintf('Unable to open path "%s".', $path));
+            throw new InvalidArgumentException(sprintf('Unable to open path "%s"', $path));
         }
         $p = new self($handle, $name ?: basename($path), $contentType);
         $p->handle = $handle;
@@ -107,16 +105,6 @@ class DataPart extends TextPart
         return $headers;
     }
 
-    public function asDebugString(): string
-    {
-        $str = parent::asDebugString();
-        if (null !== $this->filename) {
-            $str .= ' filename: '.$this->filename;
-        }
-
-        return $str;
-    }
-
     private function generateContentId(): string
     {
         return bin2hex(random_bytes(16)).'@symfony';
@@ -129,9 +117,6 @@ class DataPart extends TextPart
         }
     }
 
-    /**
-     * @return array
-     */
     public function __sleep()
     {
         // converts the body to a string

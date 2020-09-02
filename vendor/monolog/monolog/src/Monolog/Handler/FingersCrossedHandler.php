@@ -15,7 +15,6 @@ use Monolog\Handler\FingersCrossed\ErrorLevelActivationStrategy;
 use Monolog\Handler\FingersCrossed\ActivationStrategyInterface;
 use Monolog\Logger;
 use Monolog\ResettableInterface;
-use Monolog\Formatter\FormatterInterface;
 
 /**
  * Buffers all records until a certain level is reached
@@ -33,7 +32,7 @@ use Monolog\Formatter\FormatterInterface;
  *
  * @author Jordi Boggiano <j.boggiano@seld.be>
  */
-class FingersCrossedHandler extends Handler implements ProcessableHandlerInterface, ResettableInterface, FormattableHandlerInterface
+class FingersCrossedHandler extends Handler implements ProcessableHandlerInterface, ResettableInterface
 {
     use ProcessableHandlerTrait;
 
@@ -47,9 +46,7 @@ class FingersCrossedHandler extends Handler implements ProcessableHandlerInterfa
     protected $bubble;
 
     /**
-     * @psalm-param HandlerInterface|callable(?array, FingersCrossedHandler): HandlerInterface $handler
-     *
-     * @param callable|HandlerInterface              $handler            Handler or factory callable($record|null, $fingersCrossedHandler).
+     * @param callable|HandlerInterface              $handler            Handler or factory callable($record, $fingersCrossedHandler).
      * @param int|string|ActivationStrategyInterface $activationStrategy Strategy which determines when this handler takes action, or a level name/value at which the handler is activated
      * @param int                                    $bufferSize         How many entries should be buffered at most, beyond that the oldest items are removed from the buffer.
      * @param bool                                   $bubble             Whether the messages that are handled can bubble up the stack or not
@@ -98,8 +95,15 @@ class FingersCrossedHandler extends Handler implements ProcessableHandlerInterfa
         if ($this->stopBuffering) {
             $this->buffering = false;
         }
+        if (!$this->handler instanceof HandlerInterface) {
+            $record = end($this->buffer) ?: null;
 
-        $this->getHandler(end($this->buffer) ?: null)->handleBatch($this->buffer);
+            $this->handler = call_user_func($this->handler, $record, $this);
+            if (!$this->handler instanceof HandlerInterface) {
+                throw new \RuntimeException("The factory callable should return a HandlerInterface");
+            }
+        }
+        $this->handler->handleBatch($this->buffer);
         $this->buffer = [];
     }
 
@@ -121,7 +125,7 @@ class FingersCrossedHandler extends Handler implements ProcessableHandlerInterfa
                 $this->activate();
             }
         } else {
-            $this->getHandler($record)->handle($record);
+            $this->handler->handle($record);
         }
 
         return false === $this->bubble;
@@ -143,8 +147,8 @@ class FingersCrossedHandler extends Handler implements ProcessableHandlerInterfa
 
         $this->resetProcessors();
 
-        if ($this->getHandler() instanceof ResettableInterface) {
-            $this->getHandler()->reset();
+        if ($this->handler instanceof ResettableInterface) {
+            $this->handler->reset();
         }
     }
 
@@ -170,48 +174,11 @@ class FingersCrossedHandler extends Handler implements ProcessableHandlerInterfa
                 return $record['level'] >= $level;
             });
             if (count($this->buffer) > 0) {
-                $this->getHandler(end($this->buffer) ?: null)->handleBatch($this->buffer);
+                $this->handler->handleBatch($this->buffer);
             }
         }
 
         $this->buffer = [];
         $this->buffering = true;
-    }
-
-    /**
-     * Return the nested handler
-     *
-     * If the handler was provided as a factory callable, this will trigger the handler's instantiation.
-     *
-     * @return HandlerInterface
-     */
-    public function getHandler(array $record = null)
-    {
-        if (!$this->handler instanceof HandlerInterface) {
-            $this->handler = ($this->handler)($record, $this);
-            if (!$this->handler instanceof HandlerInterface) {
-                throw new \RuntimeException("The factory callable should return a HandlerInterface");
-            }
-        }
-
-        return $this->handler;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setFormatter(FormatterInterface $formatter): HandlerInterface
-    {
-        $this->getHandler()->setFormatter($formatter);
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getFormatter(): FormatterInterface
-    {
-        return $this->getHandler()->getFormatter();
     }
 }

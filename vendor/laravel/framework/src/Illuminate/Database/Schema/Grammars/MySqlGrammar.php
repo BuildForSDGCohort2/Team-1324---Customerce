@@ -16,7 +16,7 @@ class MySqlGrammar extends Grammar
      */
     protected $modifiers = [
         'Unsigned', 'Charset', 'Collate', 'VirtualAs', 'StoredAs', 'Nullable',
-        'Srid', 'Default', 'Increment', 'Comment', 'After', 'First',
+        'Default', 'Increment', 'Comment', 'After', 'First', 'Srid',
     ];
 
     /**
@@ -346,8 +346,8 @@ class MySqlGrammar extends Grammar
     /**
      * Compile a rename index command.
      *
-     * @param  \Illuminate\Database\Schema\Blueprint  $blueprint
-     * @param  \Illuminate\Support\Fluent  $command
+     * @param  \Illuminate\Database\Schema\Blueprint $blueprint
+     * @param  \Illuminate\Support\Fluent $command
      * @return string
      */
     public function compileRenameIndex(Blueprint $blueprint, Fluent $command)
@@ -690,9 +690,7 @@ class MySqlGrammar extends Grammar
     {
         $columnType = $column->precision ? "timestamp($column->precision)" : 'timestamp';
 
-        $defaultCurrent = $column->precision ? "CURRENT_TIMESTAMP($column->precision)" : 'CURRENT_TIMESTAMP';
-
-        return $column->useCurrent ? "$columnType default $defaultCurrent" : $columnType;
+        return $column->useCurrent ? "$columnType default CURRENT_TIMESTAMP" : $columnType;
     }
 
     /**
@@ -943,10 +941,6 @@ class MySqlGrammar extends Grammar
     {
         if (is_null($column->virtualAs) && is_null($column->storedAs)) {
             return $column->nullable ? ' null' : ' not null';
-        }
-
-        if ($column->nullable === false) {
-            return ' not null';
         }
     }
 

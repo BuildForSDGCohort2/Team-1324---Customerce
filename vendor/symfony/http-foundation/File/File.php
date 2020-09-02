@@ -54,10 +54,6 @@ class File extends \SplFileInfo
      */
     public function guessExtension()
     {
-        if (!class_exists(MimeTypes::class)) {
-            throw new \LogicException('You cannot guess the extension as the Mime component is not installed. Try running "composer require symfony/mime".');
-        }
-
         return MimeTypes::getDefault()->getExtensions($this->getMimeType())[0] ?? null;
     }
 
@@ -74,21 +70,20 @@ class File extends \SplFileInfo
      */
     public function getMimeType()
     {
-        if (!class_exists(MimeTypes::class)) {
-            throw new \LogicException('You cannot guess the mime type as the Mime component is not installed. Try running "composer require symfony/mime".');
-        }
-
         return MimeTypes::getDefault()->guessMimeType($this->getPathname());
     }
 
     /**
      * Moves the file to a new location.
      *
+     * @param string $directory The destination folder
+     * @param string $name      The new file name
+     *
      * @return self A File object representing the new file
      *
      * @throws FileException if the target file could not be created
      */
-    public function move(string $directory, string $name = null)
+    public function move($directory, $name = null)
     {
         $target = $this->getTargetFile($directory, $name);
 
@@ -96,7 +91,7 @@ class File extends \SplFileInfo
         $renamed = rename($this->getPathname(), $target);
         restore_error_handler();
         if (!$renamed) {
-            throw new FileException(sprintf('Could not move the file "%s" to "%s" (%s).', $this->getPathname(), $target, strip_tags($error)));
+            throw new FileException(sprintf('Could not move the file "%s" to "%s" (%s)', $this->getPathname(), $target, strip_tags($error)));
         }
 
         @chmod($target, 0666 & ~umask());
@@ -104,17 +99,14 @@ class File extends \SplFileInfo
         return $target;
     }
 
-    /**
-     * @return self
-     */
-    protected function getTargetFile(string $directory, string $name = null)
+    protected function getTargetFile($directory, $name = null)
     {
         if (!is_dir($directory)) {
             if (false === @mkdir($directory, 0777, true) && !is_dir($directory)) {
-                throw new FileException(sprintf('Unable to create the "%s" directory.', $directory));
+                throw new FileException(sprintf('Unable to create the "%s" directory', $directory));
             }
         } elseif (!is_writable($directory)) {
-            throw new FileException(sprintf('Unable to write in the "%s" directory.', $directory));
+            throw new FileException(sprintf('Unable to write in the "%s" directory', $directory));
         }
 
         $target = rtrim($directory, '/\\').\DIRECTORY_SEPARATOR.(null === $name ? $this->getBasename() : $this->getName($name));
@@ -125,9 +117,11 @@ class File extends \SplFileInfo
     /**
      * Returns locale independent base name of the given path.
      *
-     * @return string
+     * @param string $name The new file name
+     *
+     * @return string containing
      */
-    protected function getName(string $name)
+    protected function getName($name)
     {
         $originalName = str_replace('\\', '/', $name);
         $pos = strrpos($originalName, '/');

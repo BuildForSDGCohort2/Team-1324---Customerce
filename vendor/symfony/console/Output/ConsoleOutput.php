@@ -60,7 +60,7 @@ class ConsoleOutput extends StreamOutput implements ConsoleOutputInterface
     /**
      * {@inheritdoc}
      */
-    public function setDecorated(bool $decorated)
+    public function setDecorated($decorated)
     {
         parent::setDecorated($decorated);
         $this->stderr->setDecorated($decorated);
@@ -78,7 +78,7 @@ class ConsoleOutput extends StreamOutput implements ConsoleOutputInterface
     /**
      * {@inheritdoc}
      */
-    public function setVerbosity(int $level)
+    public function setVerbosity($level)
     {
         parent::setVerbosity($level);
         $this->stderr->setVerbosity($level);
@@ -125,8 +125,10 @@ class ConsoleOutput extends StreamOutput implements ConsoleOutputInterface
     /**
      * Checks if current executing environment is IBM iSeries (OS400), which
      * doesn't properly convert character-encodings between ASCII to EBCDIC.
+     *
+     * @return bool
      */
-    private function isRunningOS400(): bool
+    private function isRunningOS400()
     {
         $checks = [
             \function_exists('php_uname') ? php_uname('s') : '',

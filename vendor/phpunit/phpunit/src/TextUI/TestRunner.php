@@ -42,6 +42,7 @@ use PHPUnit\Util\TestDox\HtmlResultPrinter;
 use PHPUnit\Util\TestDox\TextResultPrinter;
 use PHPUnit\Util\TestDox\XmlResultPrinter;
 use PHPUnit\Util\XdebugFilterScriptGenerator;
+use ReflectionClass;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Exception as CodeCoverageException;
 use SebastianBergmann\CodeCoverage\Filter as CodeCoverageFilter;
@@ -83,7 +84,7 @@ final class TestRunner extends BaseTestRunner
     private $loader;
 
     /**
-     * @psalm-var Printer&TestListener
+     * @var ResultPrinter
      */
     private $printer;
 
@@ -117,7 +118,7 @@ final class TestRunner extends BaseTestRunner
      * @throws \PHPUnit\Runner\Exception
      * @throws Exception
      */
-    public function doRun(Test $suite, array $arguments = [], array $warnings = [], bool $exit = true): TestResult
+    public function doRun(Test $suite, array $arguments = [], bool $exit = true): TestResult
     {
         if (isset($arguments['configuration'])) {
             $GLOBALS['__PHPUNIT_CONFIGURATION_FILE'] = $arguments['configuration'];
@@ -269,12 +270,11 @@ final class TestRunner extends BaseTestRunner
 
         if ($this->printer === null) {
             if (isset($arguments['printer'])) {
-                if ($arguments['printer'] instanceof Printer && $arguments['printer'] instanceof TestListener) {
+                if ($arguments['printer'] instanceof Printer) {
                     $this->printer = $arguments['printer'];
                 } elseif (\is_string($arguments['printer']) && \class_exists($arguments['printer'], false)) {
                     try {
-                        new \ReflectionClass($arguments['printer']);
-                        // @codeCoverageIgnoreStart
+                        $class = new ReflectionClass($arguments['printer']);
                     } catch (\ReflectionException $e) {
                         throw new Exception(
                             $e->getMessage(),
@@ -282,9 +282,8 @@ final class TestRunner extends BaseTestRunner
                             $e
                         );
                     }
-                    // @codeCoverageIgnoreEnd
 
-                    if (\is_subclass_of($arguments['printer'], ResultPrinter::class)) {
+                    if ($class->isSubclassOf(ResultPrinter::class)) {
                         $this->printer = $this->createPrinter($arguments['printer'], $arguments);
                     }
                 }
@@ -329,10 +328,6 @@ final class TestRunner extends BaseTestRunner
                     $extension
                 );
             }
-        }
-
-        foreach ($warnings as $warning) {
-            $this->writeMessage('Warning', $warning);
         }
 
         if ($arguments['executionOrder'] === TestSuiteSorter::ORDER_RANDOMIZED) {
@@ -503,65 +498,59 @@ final class TestRunner extends BaseTestRunner
         }
 
         if ($codeCoverageReports > 0) {
-            try {
-                $codeCoverage = new CodeCoverage(
-                    null,
-                    $this->codeCoverageFilter
+            $codeCoverage = new CodeCoverage(
+                null,
+                $this->codeCoverageFilter
+            );
+
+            $codeCoverage->setUnintentionallyCoveredSubclassesWhitelist(
+                [Comparator::class]
+            );
+
+            $codeCoverage->setCheckForUnintentionallyCoveredCode(
+                $arguments['strictCoverage']
+            );
+
+            $codeCoverage->setCheckForMissingCoversAnnotation(
+                $arguments['strictCoverage']
+            );
+
+            if (isset($arguments['forceCoversAnnotation'])) {
+                $codeCoverage->setForceCoversAnnotation(
+                    $arguments['forceCoversAnnotation']
+                );
+            }
+
+            if (isset($arguments['ignoreDeprecatedCodeUnitsFromCodeCoverage'])) {
+                $codeCoverage->setIgnoreDeprecatedCode(
+                    $arguments['ignoreDeprecatedCodeUnitsFromCodeCoverage']
+                );
+            }
+
+            if (isset($arguments['disableCodeCoverageIgnore'])) {
+                $codeCoverage->setDisableIgnoredLines(true);
+            }
+
+            if (!empty($filterConfiguration['whitelist'])) {
+                $codeCoverage->setAddUncoveredFilesFromWhitelist(
+                    $filterConfiguration['whitelist']['addUncoveredFilesFromWhitelist']
                 );
 
-                $codeCoverage->setUnintentionallyCoveredSubclassesWhitelist(
-                    [Comparator::class]
+                $codeCoverage->setProcessUncoveredFilesFromWhitelist(
+                    $filterConfiguration['whitelist']['processUncoveredFilesFromWhitelist']
                 );
+            }
 
-                $codeCoverage->setCheckForUnintentionallyCoveredCode(
-                    $arguments['strictCoverage']
-                );
-
-                $codeCoverage->setCheckForMissingCoversAnnotation(
-                    $arguments['strictCoverage']
-                );
-
-                if (isset($arguments['forceCoversAnnotation'])) {
-                    $codeCoverage->setForceCoversAnnotation(
-                        $arguments['forceCoversAnnotation']
-                    );
+            if (!$this->codeCoverageFilter->hasWhitelist()) {
+                if (!$whitelistFromConfigurationFile && !$whitelistFromOption) {
+                    $this->writeMessage('Error', 'No whitelist is configured, no code coverage will be generated.');
+                } else {
+                    $this->writeMessage('Error', 'Incorrect whitelist config, no code coverage will be generated.');
                 }
-
-                if (isset($arguments['ignoreDeprecatedCodeUnitsFromCodeCoverage'])) {
-                    $codeCoverage->setIgnoreDeprecatedCode(
-                        $arguments['ignoreDeprecatedCodeUnitsFromCodeCoverage']
-                    );
-                }
-
-                if (isset($arguments['disableCodeCoverageIgnore'])) {
-                    $codeCoverage->setDisableIgnoredLines(true);
-                }
-
-                if (!empty($filterConfiguration['whitelist'])) {
-                    $codeCoverage->setAddUncoveredFilesFromWhitelist(
-                        $filterConfiguration['whitelist']['addUncoveredFilesFromWhitelist']
-                    );
-
-                    $codeCoverage->setProcessUncoveredFilesFromWhitelist(
-                        $filterConfiguration['whitelist']['processUncoveredFilesFromWhitelist']
-                    );
-                }
-
-                if (!$this->codeCoverageFilter->hasWhitelist()) {
-                    if (!$whitelistFromConfigurationFile && !$whitelistFromOption) {
-                        $this->writeMessage('Error', 'No whitelist is configured, no code coverage will be generated.');
-                    } else {
-                        $this->writeMessage('Error', 'Incorrect whitelist config, no code coverage will be generated.');
-                    }
-
-                    $codeCoverageReports = 0;
-
-                    unset($codeCoverage);
-                }
-            } catch (CodeCoverageException $e) {
-                $this->writeMessage('Error', $e->getMessage());
 
                 $codeCoverageReports = 0;
+
+                unset($codeCoverage);
             }
         }
 
@@ -1048,8 +1037,7 @@ final class TestRunner extends BaseTestRunner
                 }
 
                 try {
-                    $extensionClass = new \ReflectionClass($extension['class']);
-                    // @codeCoverageIgnoreStart
+                    $extensionClass = new ReflectionClass($extension['class']);
                 } catch (\ReflectionException $e) {
                     throw new Exception(
                         $e->getMessage(),
@@ -1057,7 +1045,6 @@ final class TestRunner extends BaseTestRunner
                         $e
                     );
                 }
-                // @codeCoverageIgnoreEnd
 
                 if (!$extensionClass->implementsInterface(Hook::class)) {
                     throw new Exception(
@@ -1096,8 +1083,7 @@ final class TestRunner extends BaseTestRunner
                 }
 
                 try {
-                    $listenerClass = new \ReflectionClass($listener['class']);
-                    // @codeCoverageIgnoreStart
+                    $listenerClass = new ReflectionClass($listener['class']);
                 } catch (\ReflectionException $e) {
                     throw new Exception(
                         $e->getMessage(),
@@ -1105,7 +1091,6 @@ final class TestRunner extends BaseTestRunner
                         $e
                     );
                 }
-                // @codeCoverageIgnoreEnd
 
                 if (!$listenerClass->implementsInterface(TestListener::class)) {
                     throw new Exception(
@@ -1270,21 +1255,21 @@ final class TestRunner extends BaseTestRunner
 
         if (!empty($arguments['excludeGroups'])) {
             $filterFactory->addFilter(
-                new \ReflectionClass(ExcludeGroupFilterIterator::class),
+                new ReflectionClass(ExcludeGroupFilterIterator::class),
                 $arguments['excludeGroups']
             );
         }
 
         if (!empty($arguments['groups'])) {
             $filterFactory->addFilter(
-                new \ReflectionClass(IncludeGroupFilterIterator::class),
+                new ReflectionClass(IncludeGroupFilterIterator::class),
                 $arguments['groups']
             );
         }
 
         if ($arguments['filter']) {
             $filterFactory->addFilter(
-                new \ReflectionClass(NameFilterIterator::class),
+                new ReflectionClass(NameFilterIterator::class),
                 $arguments['filter']
             );
         }
@@ -1309,13 +1294,6 @@ final class TestRunner extends BaseTestRunner
         $this->messagePrinted = true;
     }
 
-    /**
-     * @template T as Printer
-     *
-     * @param class-string<T> $class
-     *
-     * @return T
-     */
     private function createPrinter(string $class, array $arguments): Printer
     {
         return new $class(

@@ -3,9 +3,6 @@
 namespace Illuminate\Console;
 
 use Closure;
-use Illuminate\Console\Events\ArtisanStarting;
-use Illuminate\Console\Events\CommandFinished;
-use Illuminate\Console\Events\CommandStarting;
 use Illuminate\Contracts\Console\Application as ApplicationContract;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Contracts\Events\Dispatcher;
@@ -70,7 +67,7 @@ class Application extends SymfonyApplication implements ApplicationContract
         $this->setAutoExit(false);
         $this->setCatchExceptions(false);
 
-        $this->events->dispatch(new ArtisanStarting($this));
+        $this->events->dispatch(new Events\ArtisanStarting($this));
 
         $this->bootstrap();
     }
@@ -85,7 +82,7 @@ class Application extends SymfonyApplication implements ApplicationContract
         );
 
         $this->events->dispatch(
-            new CommandStarting(
+            new Events\CommandStarting(
                 $commandName, $input, $output = $output ?: new ConsoleOutput
             )
         );
@@ -93,7 +90,7 @@ class Application extends SymfonyApplication implements ApplicationContract
         $exitCode = parent::run($input, $output);
 
         $this->events->dispatch(
-            new CommandFinished($commandName, $input, $output, $exitCode)
+            new Events\CommandFinished($commandName, $input, $output, $exitCode)
         );
 
         return $exitCode;

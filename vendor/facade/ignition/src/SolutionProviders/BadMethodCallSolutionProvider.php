@@ -2,13 +2,13 @@
 
 namespace Facade\Ignition\SolutionProviders;
 
-use BadMethodCallException;
-use Facade\IgnitionContracts\BaseSolution;
-use Facade\IgnitionContracts\HasSolutionsForThrowable;
-use Illuminate\Support\Collection;
+use Throwable;
 use ReflectionClass;
 use ReflectionMethod;
-use Throwable;
+use BadMethodCallException;
+use Illuminate\Support\Collection;
+use Facade\IgnitionContracts\BaseSolution;
+use Facade\IgnitionContracts\HasSolutionsForThrowable;
 
 class BadMethodCallSolutionProvider implements HasSolutionsForThrowable
 {

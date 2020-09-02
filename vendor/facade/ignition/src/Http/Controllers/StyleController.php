@@ -2,8 +2,8 @@
 
 namespace Facade\Ignition\Http\Controllers;
 
-use Facade\Ignition\Ignition;
 use Illuminate\Http\Request;
+use Facade\Ignition\Ignition;
 
 class StyleController
 {
@@ -11,8 +11,7 @@ class StyleController
     {
         return response(
             file_get_contents(Ignition::styles()[$request->style]),
-            200,
-            ['Content-Type' => 'text/css']
+            200, ['Content-Type' => 'text/css']
         );
     }
 }

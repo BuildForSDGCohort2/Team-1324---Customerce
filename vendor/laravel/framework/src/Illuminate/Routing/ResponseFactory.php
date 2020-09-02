@@ -70,7 +70,7 @@ class ResponseFactory implements FactoryContract
     /**
      * Create a new response for a given view.
      *
-     * @param  string|array  $view
+     * @param  string  $view
      * @param  array  $data
      * @param  int  $status
      * @param  array  $headers
@@ -78,10 +78,6 @@ class ResponseFactory implements FactoryContract
      */
     public function view($view, $data = [], $status = 200, array $headers = [])
     {
-        if (is_array($view)) {
-            return $this->make($this->view->first($view, $data), $status, $headers);
-        }
-
         return $this->make($this->view->make($view, $data), $status, $headers);
     }
 
@@ -212,7 +208,7 @@ class ResponseFactory implements FactoryContract
      * Create a new redirect response to a named route.
      *
      * @param  string  $route
-     * @param  mixed  $parameters
+     * @param  array  $parameters
      * @param  int  $status
      * @param  array  $headers
      * @return \Illuminate\Http\RedirectResponse
@@ -226,7 +222,7 @@ class ResponseFactory implements FactoryContract
      * Create a new redirect response to a controller action.
      *
      * @param  string  $action
-     * @param  mixed  $parameters
+     * @param  array  $parameters
      * @param  int  $status
      * @param  array  $headers
      * @return \Illuminate\Http\RedirectResponse

@@ -288,7 +288,6 @@ final class JUnit extends Printer implements TestListener
 
         try {
             $class = new \ReflectionClass($test);
-            // @codeCoverageIgnoreStart
         } catch (\ReflectionException $e) {
             throw new Exception(
                 $e->getMessage(),
@@ -296,14 +295,12 @@ final class JUnit extends Printer implements TestListener
                 $e
             );
         }
-        // @codeCoverageIgnoreEnd
 
         $methodName = $test->getName(!$usesDataprovider);
 
         if ($class->hasMethod($methodName)) {
             try {
                 $method = $class->getMethod($methodName);
-                // @codeCoverageIgnoreStart
             } catch (\ReflectionException $e) {
                 throw new Exception(
                     $e->getMessage(),
@@ -311,7 +308,6 @@ final class JUnit extends Printer implements TestListener
                     $e
                 );
             }
-            // @codeCoverageIgnoreEnd
 
             $testCase->setAttribute('class', $class->getName());
             $testCase->setAttribute('classname', \str_replace('\\', '.', $class->getName()));

@@ -167,22 +167,21 @@ class BrowserConsoleHandler extends AbstractProcessingHandler
 
     private static function handleStyles(string $formatted): array
     {
-        $args = [];
+        $args = [static::quote('font-weight: normal')];
         $format = '%c' . $formatted;
         preg_match_all('/\[\[(.*?)\]\]\{([^}]*)\}/s', $format, $matches, PREG_OFFSET_CAPTURE | PREG_SET_ORDER);
 
         foreach (array_reverse($matches) as $match) {
-            $args[] = '"font-weight: normal"';
             $args[] = static::quote(static::handleCustomStyles($match[2][0], $match[1][0]));
+            $args[] = '"font-weight: normal"';
 
             $pos = $match[0][1];
             $format = Utils::substr($format, 0, $pos) . '%c' . $match[1][0] . '%c' . Utils::substr($format, $pos + strlen($match[0][0]));
         }
 
-        $args[] = static::quote('font-weight: normal');
-        $args[] = static::quote($format);
+        array_unshift($args, static::quote($format));
 
-        return array_reverse($args);
+        return $args;
     }
 
     private static function handleCustomStyles(string $style, string $string): string
@@ -218,7 +217,7 @@ class BrowserConsoleHandler extends AbstractProcessingHandler
             if (empty($value)) {
                 $value = static::quote('');
             }
-            $script[] = static::call('log', static::quote('%s: %o'), static::quote((string) $key), $value);
+            $script[] = static::call('log', static::quote('%s: %o'), static::quote($key), $value);
         }
 
         return $script;

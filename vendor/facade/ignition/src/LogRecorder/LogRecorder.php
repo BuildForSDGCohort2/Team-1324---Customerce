@@ -2,13 +2,13 @@
 
 namespace Facade\Ignition\LogRecorder;
 
-use Illuminate\Contracts\Foundation\Application;
+use Exception;
 use Illuminate\Log\Events\MessageLogged;
-use Throwable;
+use Illuminate\Contracts\Foundation\Application;
 
 class LogRecorder
 {
-    /** @var \Facade\Ignition\LogRecorder\LogMessage[] */
+    /** @var \Facade\Flare\LogRecorder\LogMessage[] */
     protected $logMessages = [];
 
     /** @var \Illuminate\Contracts\Foundation\Application */
@@ -57,7 +57,7 @@ class LogRecorder
             return false;
         }
 
-        if (! $event->context['exception'] instanceof Throwable) {
+        if (! $event->context['exception'] instanceof Exception) {
             return false;
         }
 

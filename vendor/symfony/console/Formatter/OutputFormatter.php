@@ -28,9 +28,11 @@ class OutputFormatter implements WrappableOutputFormatterInterface
     /**
      * Escapes "<" special char in given text.
      *
+     * @param string $text Text to escape
+     *
      * @return string Escaped text
      */
-    public static function escape(string $text)
+    public static function escape($text)
     {
         $text = preg_replace('/([^\\\\]?)</', '$1\\<', $text);
 
@@ -40,9 +42,13 @@ class OutputFormatter implements WrappableOutputFormatterInterface
     /**
      * Escapes trailing "\" in given text.
      *
+     * @param string $text Text to escape
+     *
+     * @return string Escaped text
+     *
      * @internal
      */
-    public static function escapeTrailingBackslash(string $text): string
+    public static function escapeTrailingBackslash($text)
     {
         if ('\\' === substr($text, -1)) {
             $len = \strlen($text);
@@ -57,7 +63,8 @@ class OutputFormatter implements WrappableOutputFormatterInterface
     /**
      * Initializes console output formatter.
      *
-     * @param OutputFormatterStyleInterface[] $styles Array of "name => FormatterStyle" instances
+     * @param bool                            $decorated Whether this formatter should actually decorate strings
+     * @param OutputFormatterStyleInterface[] $styles    Array of "name => FormatterStyle" instances
      */
     public function __construct(bool $decorated = false, array $styles = [])
     {
@@ -78,9 +85,9 @@ class OutputFormatter implements WrappableOutputFormatterInterface
     /**
      * {@inheritdoc}
      */
-    public function setDecorated(bool $decorated)
+    public function setDecorated($decorated)
     {
-        $this->decorated = $decorated;
+        $this->decorated = (bool) $decorated;
     }
 
     /**
@@ -94,7 +101,7 @@ class OutputFormatter implements WrappableOutputFormatterInterface
     /**
      * {@inheritdoc}
      */
-    public function setStyle(string $name, OutputFormatterStyleInterface $style)
+    public function setStyle($name, OutputFormatterStyleInterface $style)
     {
         $this->styles[strtolower($name)] = $style;
     }
@@ -102,7 +109,7 @@ class OutputFormatter implements WrappableOutputFormatterInterface
     /**
      * {@inheritdoc}
      */
-    public function hasStyle(string $name)
+    public function hasStyle($name)
     {
         return isset($this->styles[strtolower($name)]);
     }
@@ -110,10 +117,10 @@ class OutputFormatter implements WrappableOutputFormatterInterface
     /**
      * {@inheritdoc}
      */
-    public function getStyle(string $name)
+    public function getStyle($name)
     {
         if (!$this->hasStyle($name)) {
-            throw new InvalidArgumentException(sprintf('Undefined style: "%s".', $name));
+            throw new InvalidArgumentException(sprintf('Undefined style: %s', $name));
         }
 
         return $this->styles[strtolower($name)];
@@ -122,15 +129,15 @@ class OutputFormatter implements WrappableOutputFormatterInterface
     /**
      * {@inheritdoc}
      */
-    public function format(?string $message)
+    public function format($message)
     {
-        return $this->formatAndWrap($message, 0);
+        return $this->formatAndWrap((string) $message, 0);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function formatAndWrap(?string $message, int $width)
+    public function formatAndWrap(string $message, int $width)
     {
         $offset = 0;
         $output = '';
@@ -159,7 +166,7 @@ class OutputFormatter implements WrappableOutputFormatterInterface
             if (!$open && !$tag) {
                 // </>
                 $this->styleStack->pop();
-            } elseif (null === $style = $this->createStyleFromString($tag)) {
+            } elseif (false === $style = $this->createStyleFromString($tag)) {
                 $output .= $this->applyCurrentStyle($text, $output, $width, $currentLineLength);
             } elseif ($open) {
                 $this->styleStack->push($style);
@@ -187,15 +194,17 @@ class OutputFormatter implements WrappableOutputFormatterInterface
 
     /**
      * Tries to create new style instance from string.
+     *
+     * @return OutputFormatterStyle|false False if string is not format string
      */
-    private function createStyleFromString(string $string): ?OutputFormatterStyleInterface
+    private function createStyleFromString(string $string)
     {
         if (isset($this->styles[$string])) {
             return $this->styles[$string];
         }
 
         if (!preg_match_all('/([^=]+)=([^;]+)(;|$)/', $string, $matches, PREG_SET_ORDER)) {
-            return null;
+            return false;
         }
 
         $style = new OutputFormatterStyle();
@@ -216,7 +225,7 @@ class OutputFormatter implements WrappableOutputFormatterInterface
                     $style->setOption($option);
                 }
             } else {
-                return null;
+                return false;
             }
         }
 

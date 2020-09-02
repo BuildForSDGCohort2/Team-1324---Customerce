@@ -24,7 +24,7 @@ class Printer
     protected $autoFlush = false;
 
     /**
-     * @psalm-var resource|closed-resource
+     * @var resource
      */
     protected $out;
 
@@ -77,8 +77,6 @@ class Printer
     public function flush(): void
     {
         if ($this->out && \strncmp($this->outTarget, 'php://', 6) !== 0) {
-            \assert(\is_resource($this->out));
-
             \fclose($this->out);
         }
     }
@@ -93,8 +91,6 @@ class Printer
     public function incrementalFlush(): void
     {
         if ($this->out) {
-            \assert(\is_resource($this->out));
-
             \fflush($this->out);
         } else {
             \flush();
@@ -104,8 +100,6 @@ class Printer
     public function write(string $buffer): void
     {
         if ($this->out) {
-            \assert(\is_resource($this->out));
-
             \fwrite($this->out, $buffer);
 
             if ($this->autoFlush) {
