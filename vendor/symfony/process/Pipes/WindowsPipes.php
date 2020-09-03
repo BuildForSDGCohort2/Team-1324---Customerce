@@ -56,8 +56,11 @@ class WindowsPipes extends AbstractPipes
                     $file = sprintf('%s\\sf_proc_%02X.%s', $tmpDir, $i, $name);
 
                     if (!$h = fopen($file.'.lock', 'w')) {
+                        if (file_exists($file.'.lock')) {
+                            continue 2;
+                        }
                         restore_error_handler();
-                        throw new RuntimeException(sprintf('A temporary file could not be opened to write the process output: %s', $lastError));
+                        throw new RuntimeException('A temporary file could not be opened to write the process output: '.$lastError);
                     }
                     if (!flock($h, LOCK_EX | LOCK_NB)) {
                         continue 2;
@@ -93,7 +96,7 @@ class WindowsPipes extends AbstractPipes
     /**
      * {@inheritdoc}
      */
-    public function getDescriptors()
+    public function getDescriptors(): array
     {
         if (!$this->haveReadSupport) {
             $nullstream = fopen('NUL', 'c');
@@ -118,7 +121,7 @@ class WindowsPipes extends AbstractPipes
     /**
      * {@inheritdoc}
      */
-    public function getFiles()
+    public function getFiles(): array
     {
         return $this->files;
     }
@@ -126,7 +129,7 @@ class WindowsPipes extends AbstractPipes
     /**
      * {@inheritdoc}
      */
-    public function readAndWrite($blocking, $close = false)
+    public function readAndWrite(bool $blocking, bool $close = false): array
     {
         $this->unblock();
         $w = $this->write();
@@ -161,7 +164,7 @@ class WindowsPipes extends AbstractPipes
     /**
      * {@inheritdoc}
      */
-    public function haveReadSupport()
+    public function haveReadSupport(): bool
     {
         return $this->haveReadSupport;
     }
@@ -169,7 +172,7 @@ class WindowsPipes extends AbstractPipes
     /**
      * {@inheritdoc}
      */
-    public function areOpen()
+    public function areOpen(): bool
     {
         return $this->pipes && $this->fileHandles;
     }
