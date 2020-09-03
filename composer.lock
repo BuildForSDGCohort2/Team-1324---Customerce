@@ -2592,12 +2592,12 @@
             "version": "1.2.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/ramsey/moontoast-math.git",
+                "url": "https://github.com/dabusharsystems/moontoast-math.git",
                 "reference": "5f47d34c87767dbcc08b30377a9827df71de91fa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ramsey/moontoast-math/zipball/5f47d34c87767dbcc08b30377a9827df71de91fa",
+                "url": "https://api.github.com/repos/dabusharsystems/moontoast-math/zipball/5f47d34c87767dbcc08b30377a9827df71de91fa",
                 "reference": "5f47d34c87767dbcc08b30377a9827df71de91fa",
                 "shasum": ""
             },
@@ -2630,7 +2630,7 @@
                 }
             ],
             "description": "A mathematics library, providing functionality for large numbers",
-            "homepage": "https://github.com/ramsey/moontoast-math",
+            "homepage": "https://github.com/dabusharsystems/moontoast-math",
             "keywords": [
                 "bcmath",
                 "math"
