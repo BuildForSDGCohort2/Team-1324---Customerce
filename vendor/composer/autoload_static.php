@@ -16,8 +16,6 @@ class ComposerStaticInit394821669fe7c680fe5355624b309253
         '0d59ee240a4cd96ddbb4ff164fccea4d' => __DIR__ . '/..' . '/symfony/polyfill-php73/bootstrap.php',
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
         '667aeda72477189d0494fecd327c3641' => __DIR__ . '/..' . '/symfony/var-dumper/Resources/functions/dump.php',
-        'decc78cc4436b1292c6c0d151b19445c' => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib/bootstrap.php',
-        '56823cacd97af379eceaf82ad00b928f' => __DIR__ . '/..' . '/phpseclib/bcmath_compat/lib/bcmath.php',
         'def43f6c87e4f8dfd0c9e1b1bab14fe8' => __DIR__ . '/..' . '/symfony/polyfill-iconv/bootstrap.php',
         '2c102faa651ef8ea5874edb585946bce' => __DIR__ . '/..' . '/swiftmailer/swiftmailer/lib/swift_required.php',
         'e39a8b23c42d4e1452234d762b03835a' => __DIR__ . '/..' . '/ramsey/uuid/src/functions.php',
@@ -36,6 +34,7 @@ class ComposerStaticInit394821669fe7c680fe5355624b309253
         '0b0974a5566a1077e4f2e111341112c1' => __DIR__ . '/..' . '/zendframework/zend-diactoros/src/functions/normalize_server.php',
         '1ca3bc274755662169f9629d5412a1da' => __DIR__ . '/..' . '/zendframework/zend-diactoros/src/functions/normalize_uploaded_files.php',
         '40360c0b9b437e69bcbb7f1349ce029e' => __DIR__ . '/..' . '/zendframework/zend-diactoros/src/functions/parse_cookie_header.php',
+        'decc78cc4436b1292c6c0d151b19445c' => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib/bootstrap.php',
         'bbd3f4c222c0dc01d51aaddd000c7145' => __DIR__ . '/..' . '/pragmarx/ia-arr/src/Support/helpers.php',
         '5de818542d3f05537910d3201983c6e4' => __DIR__ . '/..' . '/pragmarx/ia-arr/src/Support/alias.php',
         'd1bbbb1cdb91a23bb0785f5b4c1b000a' => __DIR__ . '/..' . '/pragmarx/ia-collection/src/Support/helpers.php',
@@ -50,6 +49,7 @@ class ComposerStaticInit394821669fe7c680fe5355624b309253
         'b6ec61354e97f32c0ae683041c78392a' => __DIR__ . '/..' . '/scrivo/highlight.php/HighlightUtilities/functions.php',
         '4a1f389d6ce373bda9e57857d3b61c84' => __DIR__ . '/..' . '/barryvdh/laravel-debugbar/src/helpers.php',
         'ed962a97bd972bc82007176b647d4e36' => __DIR__ . '/..' . '/facade/ignition/src/helpers.php',
+        '56823cacd97af379eceaf82ad00b928f' => __DIR__ . '/..' . '/phpseclib/bcmath_compat/lib/bcmath.php',
         '9cf90fe04e875b390427268b191a95f0' => __DIR__ . '/..' . '/pragmarx/countries/src/package/Support/helpers.php',
     );
 
@@ -151,7 +151,6 @@ class ComposerStaticInit394821669fe7c680fe5355624b309253
         ),
         'M' => 
         array (
-            'Moontoast\\Math\\Exception\\' => 25,
             'Moontoast\\Math\\' => 15,
             'Monolog\\' => 8,
         ),
@@ -468,10 +467,6 @@ class ComposerStaticInit394821669fe7c680fe5355624b309253
         'NunoMaduro\\Collision\\' => 
         array (
             0 => __DIR__ . '/..' . '/nunomaduro/collision/src',
-        ),
-        'Moontoast\\Math\\Exception\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/moontoast/math/src/Moontoast/Math/Exception',
         ),
         'Moontoast\\Math\\' => 
         array (
@@ -3947,10 +3942,7 @@ class ComposerStaticInit394821669fe7c680fe5355624b309253
         'Monolog\\SignalHandler' => __DIR__ . '/..' . '/monolog/monolog/src/Monolog/SignalHandler.php',
         'Monolog\\Test\\TestCase' => __DIR__ . '/..' . '/monolog/monolog/src/Monolog/Test/TestCase.php',
         'Monolog\\Utils' => __DIR__ . '/..' . '/monolog/monolog/src/Monolog/Utils.php',
-        'Moontoast\\Math\\AbstractBigNumber' => __DIR__ . '/..' . '/moontoast/math/src/Moontoast/Math/AbstractBigNumber.php',
         'Moontoast\\Math\\BigNumber' => __DIR__ . '/..' . '/moontoast/math/src/Moontoast/Math/BigNumber.php',
-        'Moontoast\\Math\\BigNumberImmutable' => __DIR__ . '/..' . '/moontoast/math/src/Moontoast/Math/BigNumberImmutable.php',
-        'Moontoast\\Math\\BigNumberInterface' => __DIR__ . '/..' . '/moontoast/math/src/Moontoast/Math/BigNumberInterface.php',
         'Moontoast\\Math\\Exception\\ArithmeticException' => __DIR__ . '/..' . '/moontoast/math/src/Moontoast/Math/Exception/ArithmeticException.php',
         'Nette\\ArgumentOutOfRangeException' => __DIR__ . '/..' . '/nette/utils/src/Utils/exceptions.php',
         'Nette\\Bridges\\CacheDI\\CacheExtension' => __DIR__ . '/..' . '/nette/caching/src/Bridges/CacheDI/CacheExtension.php',
