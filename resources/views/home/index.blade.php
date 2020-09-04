@@ -442,20 +442,20 @@
                                 <i class="fa fa-phone" aria-hidden="true"></i>
                                 <h4 class="d-inline-block">PHONE :
                                     <br>
-                                    <span>+17867497342 , +50937703581</span></h4>
+                                    <span>+254 0700 000 000</span></h4>
                             </div>
                             <!-- Info-2 -->
                             <div class="info d-flex align-items-start">
                                 <i class="fa fa-envelope" aria-hidden="true"></i>
                                 <h4 class="d-inline-block">EMAIL :
                                     <br>
-                                    <span>creatydev@gmail.com</span></h4>
+                                    <span>patogee@gmail.com</span></h4>
                             </div>
                             <!-- Info-3 -->
                             <div class="info d-flex align-items-start">
                                 <i class="fa fa-street-view" aria-hidden="true"></i>
                                 <h4 class="d-inline-block">ADDRESS :<br>
-                                    <span>6743 Saudi Arabia Street ,Ryadh, Bahri</span></h4>
+                                    <span>Nrb Nairobi</span></h4>
                             </div>
                         </div>
                     </div>
