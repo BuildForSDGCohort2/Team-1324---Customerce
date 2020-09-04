@@ -2,7 +2,7 @@
 <footer class="footer">
     <div class="container text-center">
         <img src="{{ asset('saas/img/logo-white.png') }}" alt="">
-        <p>© 2019 CreatyDev. All rights reserved.</p>
+        <p>© 2020 Dabushar. All rights reserved.</p>
     </div>
 </footer>
 <!-- ======== End Footer ======== -->
@@ -23,7 +23,7 @@
                                     <div class="col-md-3 register-left">
                                         <img src="https://image.ibb.co/n7oTvU/logo_white.png" alt=""/>
                                         <h3>Welcome</h3>
-                                        <p>You are 30 seconds away from earning your own money!</p>
+                                        <p>You are 30 seconds away from managing your own business!</p>
                                         <input type="submit" name="" value="Get started"/><br/>
                                         {{-- <a href="/#price" class="btn btn-primary"></a> --}}
                                     </div>
