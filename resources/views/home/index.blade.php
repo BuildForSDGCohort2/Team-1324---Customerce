@@ -8,19 +8,15 @@
                     <div class="row d-flex align-items-center">
                         <div class="col-md-6">
                             <div class="left">
-                                <h3>Save weeks of time and build your Vue.js & Laravel SaaS app in minutes.</h3>
+                                <h3>Save weeks of time and manage your business in minutes.</h3>
                                     <p>
-                                        <strong>SaaSWeb provides the Ultimate starter kit for multi-tenant SaaS project on top of Laravel and Vue framework.</strong>
+                                        <strong>Customerce provides you the Ultimate System to manage your business in no time.</strong>
                                     </p>
                                     <p>
-                                    SaaSWeb will help you rapidly build your Software as a Service application. Out of the box Authentication,
-                                    Subscriptions, Billing, Team management, Invoices, Support ticket, Notifications, User Profiles, landing page,
-                                    API, two-factor authentication, Statistics, Visitor log, Env editor, Admin Panel to manage Plans, Coupons, Roles,
-                                    Permissions and so much more !
+                                    Customerce will help you rapidly manage your business. Send Invoices, Manage Customers, Manage Leads, Use our POS !
                                 </p>
                                 <a href="{{ route('register') }}" class="btn-1">Get Started</a>
-                                <a href="/docs" class="btn-2">View documention</a>
-                            </div>
+                                </div>
                         </div>
                         <!-- Right-->
                         <div class="col-md-6">
@@ -34,7 +30,7 @@
         </section>
         <!-- ======== End Slider ======== -->
 
-        <!-- ======== Start Features ======== -->
+       {{-- <!-- ======== Start Features ======== -->
         <section class="features" id="features">
             <div class="container text-center">
                 <div class="heading">
@@ -376,7 +372,7 @@
                     
                     @endforeach
                     <!-- Box-2 -->
-                    {{-- <div class="col-md-4">
+                    --}}{{-- <div class="col-md-4">
                         <div class="box box-center">
                             <a href="#0" class="top-btn">Popular</a>
                             <h3>Standard</h3>
@@ -388,9 +384,9 @@
                             </ul>
                             <a href="http://saas-boilerplate.test/subscription?plan=User_month_50" class="btn-1">Get Started</a>
                         </div>
-                    </div> --}}
+                    </div> --}}{{--
                     <!-- Box-3 -->
-                    {{-- <div class="col-md-4">
+                    --}}{{-- <div class="col-md-4">
                         <div class="box">
                             <h3>Ultimate</h3>
                             <h4>$<span>85</span>/ Month</h4>
@@ -401,12 +397,12 @@
                             </ul>
                             <a href="http://saas-boilerplate.test/subscription?plan=Team_plan_100" class="btn-2">Get Started</a>
                         </div>
-                    </div> --}}
+                    </div> --}}{{--
                 </div>
             </div>
         </section>
         <!-- ======== End Our Price ======== -->
-
+--}}
         <!-- ======== Start Clients ======== -->
         <section class="clients">
             <div class="container">
