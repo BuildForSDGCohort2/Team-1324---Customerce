@@ -21,6 +21,7 @@
         "laravel/telescope": "^2.0",
         "laravel/tinker": "^1.0",
         "moontoast/math": "1.1.2 as 1.999.999",
+        "nwidart/laravel-modules": "^7.2",
         "pragmarx/countries": "*",
         "sarfraznawaz2005/visitlog": "^1.2",
         "unisharp/laravel-filemanager": "^1.8"
