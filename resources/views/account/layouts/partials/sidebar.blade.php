@@ -150,7 +150,24 @@
                         </div>
                     </li>
                     @endteamsubscription
-                    <li class="nav-item">
+                <li class="nav-item">
+                        <a class="nav-link{{ return_if(on_page('invoices.index'), ' active') }}" href="#navbar-dev" data-toggle="collapse" role="button"
+                            aria-expanded="false" aria-controls="navbar-forms">
+                            <i class="fas fa-code"></i>
+                            <span class="nav-link-text">Invoices</span>
+                        </a>
+                        <div class="collapse" id="navbar-dev">
+                            <ul class="nav nav-sm flex-column">
+                                <li class="nav-item">
+                                    <a class="nav-link{{ return_if(on_page('invoices.index'), ' active') }}"
+                                        href="{{ route('invoices.index') }}">
+                                       Invoices Panel
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <!--<li class="nav-item">
                         <a class="nav-link{{ return_if(on_page('developer.index'), ' active') }}" href="#navbar-dev" data-toggle="collapse" role="button"
                             aria-expanded="false" aria-controls="navbar-forms">
                             <i class="fas fa-code"></i>
@@ -166,7 +183,7 @@
                                 </li>
                             </ul>
                         </div>
-                    </li>
+                    </li>-->
                     {{-- Example Resources companies for tenant, uncomment if you want to test --}}
                     {{-- <li class="nav-item">
                         <a class="nav-link" href="#navbar-tables" data-toggle="collapse" role="button"
@@ -258,7 +275,7 @@
                             </ul>
                         </div>
                     </li>
-                    <li class="nav-item">
+                   <!-- <li class="nav-item">
                         <a class="nav-link{{ return_if(on_page('account.tokens.index'), ' active') }}" href="#navbar-maps" data-toggle="collapse" role="button"
                             aria-expanded="false" aria-controls="navbar-maps">
                             <i class="fas fa-plug"></i>
@@ -272,7 +289,7 @@
                                 </a>
                             </ul>
                         </div>
-                    </li>
+                    </li>-->
                     <li class="nav-item">
                         <a class="nav-link{{ return_if(on_page('account.mynotification.index'), ' active') }}" href="#navbar-notifications" data-toggle="collapse" role="button"
                             aria-expanded="false" aria-controls="navbar-notifications">
@@ -291,9 +308,9 @@
                 </ul>
                 <!-- Divider -->
                 <hr class="my-3">
-                <!-- Heading -->
+                <!-- Heading
                 <h6 class="navbar-heading p-0 text-muted">Documentation</h6>
-                <!-- Navigation -->
+                 Navigation
                 <ul class="navbar-nav mb-md-3">
                     <li class="nav-item">
                         <a class="nav-link"
@@ -303,7 +320,7 @@
                             <span class="nav-link-text">Getting started</span>
                         </a>
                     </li>
-                </ul>
+                </ul>-->
             </div>
         </div>
     </div>

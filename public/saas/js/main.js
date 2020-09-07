@@ -69,7 +69,7 @@ $(document).ready(function(){
       autoplaySpeed: 4000,
       prevArrow: false,
       nextArrow: false,
-      autoplaySpeed: 2000,
+      // autoplaySpeed: 2000,
       infinite: true,
       responsive: [
         {

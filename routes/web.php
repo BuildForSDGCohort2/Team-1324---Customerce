@@ -518,6 +518,8 @@ Route::group(['namespace' => 'Webhook\Controllers'], function () {
 Route::get('/admin', function () {
     return redirect()->route('admin.dashboard');
 });
+
+Route::resource('invoices', 'InvoiceController');
 /**
  * Sample pages Routes
  */
