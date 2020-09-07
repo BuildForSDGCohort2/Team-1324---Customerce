@@ -13,6 +13,10 @@ class Invoice extends Model
         'client_address'
     ];
 
+    public static function orderBy(string $string, string $string1)
+    {
+    }
+
     public function products()
     {
         return $this->hasMany(InvoiceProduct::class);

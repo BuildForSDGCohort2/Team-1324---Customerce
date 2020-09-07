@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace CreatyDev\Http\Invoice\Controllers;
 
+use CreatyDev\App\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
