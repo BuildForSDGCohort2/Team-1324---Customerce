@@ -1,62 +1,4 @@
 <?php return array (
-  'barryvdh/laravel-debugbar' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Barryvdh\\Debugbar\\ServiceProvider',
-    ),
-    'aliases' => 
-    array (
-      'Debugbar' => 'Barryvdh\\Debugbar\\Facade',
-    ),
-  ),
-  'barryvdh/laravel-dompdf' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Barryvdh\\DomPDF\\ServiceProvider',
-    ),
-    'aliases' => 
-    array (
-      'PDF' => 'Barryvdh\\DomPDF\\Facade',
-    ),
-  ),
-  'binarytorch/larecipe' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'BinaryTorch\\LaRecipe\\LaRecipeServiceProvider',
-    ),
-    'aliases' => 
-    array (
-      'LaRecipe' => 'BinaryTorch\\LaRecipe\\LaRecipe',
-    ),
-  ),
-  'brotzka/laravel-dotenv-editor' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Brotzka\\DotenvEditor\\DotenvEditorServiceProvider',
-    ),
-    'aliases' => 
-    array (
-      'DotenvEditor' => 'Brotzka\\DotenvEditor\\DotenvEditorFacade',
-    ),
-  ),
-  'consoletvs/charts' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'ConsoleTVs\\Charts\\ChartsServiceProvider',
-    ),
-  ),
-  'cviebrock/eloquent-sluggable' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Cviebrock\\EloquentSluggable\\ServiceProvider',
-    ),
-  ),
   'facade/ignition' => 
   array (
     'providers' => 
@@ -75,22 +17,11 @@
       0 => 'Fideloper\\Proxy\\TrustedProxyServiceProvider',
     ),
   ),
-  'intervention/image' => 
+  'fruitcake/laravel-cors' => 
   array (
     'providers' => 
     array (
-      0 => 'Intervention\\Image\\ImageServiceProvider',
-    ),
-    'aliases' => 
-    array (
-      'Image' => 'Intervention\\Image\\Facades\\Image',
-    ),
-  ),
-  'kalnoy/nestedset' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Kalnoy\\Nestedset\\NestedSetServiceProvider',
+      0 => 'Fruitcake\\Cors\\CorsServiceProvider',
     ),
   ),
   'laravel/cashier' => 
@@ -107,18 +38,25 @@
       0 => 'Laravel\\Passport\\PassportServiceProvider',
     ),
   ),
-  'laravel/telescope' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Laravel\\Telescope\\TelescopeServiceProvider',
-    ),
-  ),
   'laravel/tinker' => 
   array (
     'providers' => 
     array (
       0 => 'Laravel\\Tinker\\TinkerServiceProvider',
+    ),
+  ),
+  'laravel/ui' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Laravel\\Ui\\UiServiceProvider',
+    ),
+  ),
+  'laraveldaily/laravel-charts' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'LaravelDaily\\LaravelCharts\\LaravelChartsServiceProvider',
     ),
   ),
   'nesbot/carbon' => 
@@ -135,36 +73,15 @@
       0 => 'NunoMaduro\\Collision\\Adapters\\Laravel\\CollisionServiceProvider',
     ),
   ),
-  'nwidart/laravel-modules' => 
+  'yajra/laravel-datatables-oracle' => 
   array (
     'providers' => 
     array (
-      0 => 'Nwidart\\Modules\\LaravelModulesServiceProvider',
+      0 => 'Yajra\\DataTables\\DataTablesServiceProvider',
     ),
     'aliases' => 
     array (
-      'Module' => 'Nwidart\\Modules\\Facades\\Module',
-    ),
-  ),
-  'sarfraznawaz2005/visitlog' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Sarfraznawaz2005\\VisitLog\\VisitLogServiceProvider',
-    ),
-    'aliases' => 
-    array (
-      'VisitLog' => 'Sarfraznawaz2005\\VisitLog\\Facades\\VisitLog',
-    ),
-  ),
-  'unisharp/laravel-filemanager' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'UniSharp\\LaravelFilemanager\\LaravelFilemanagerServiceProvider',
-    ),
-    'aliases' => 
-    array (
+      'DataTables' => 'Yajra\\DataTables\\Facades\\DataTables',
     ),
   ),
 );

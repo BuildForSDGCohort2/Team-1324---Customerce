@@ -3,22 +3,31 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * Class Invoice
+ * @package App
+ */
 class Invoice extends Model
 {
+    use SoftDeletes;
+
+    /**
+     * @var array
+     */
     protected $fillable = [
-        'invoice_no', 'invoice_date', 'due_date',
-        'title', 'sub_total', 'discount',
-        'grand_total', 'client',
-        'client_address'
+        'customer_id',
+        'invoice_date',
+        'invoice_amount',
     ];
 
-    public static function orderBy(string $string, string $string1)
+    /**
+     * @return BelongsTo
+     */
+    public function customer()
     {
-    }
-
-    public function products()
-    {
-        return $this->hasMany(InvoiceProduct::class);
+        return $this->belongsTo(Customer::class);
     }
 }
