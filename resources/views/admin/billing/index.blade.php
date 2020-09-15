@@ -1,5 +1,6 @@
 @extends('layouts.admin')
 @section('content')
+{{--
 <div class="card">
     <div class="card-header">
         {{ trans('global.billing.menu') }}
@@ -342,4 +343,4 @@
         background-color: #fefde5 !important;
     }
 </style>
-@endsection
+@endsection--}}

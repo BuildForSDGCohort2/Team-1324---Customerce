@@ -111,4 +111,20 @@ return [
             'name_helper'       => '',
         ],
     ],
+    'pos'        => [
+        'title'          => 'POS',
+        'title_singular' => 'POS',
+    ],
+    'expense'        => [
+        'title'          => 'Expenses',
+        'title_singular' => 'Expense',
+        ],
+    'income'        => [
+        'title'          => 'Incomes',
+        'title_singular' => 'Income',
+    ],
+    'notes'        => [
+        'title'          => 'Notes',
+        'title_singular' => 'Note',
+    ],
 ];

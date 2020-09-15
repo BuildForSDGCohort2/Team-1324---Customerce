@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 @section('content')
-@can('customer_create')
+@cannot('customer_create')
     <div style="margin-bottom: 10px;" class="row">
         <div class="col-lg-12">
             <a class="btn btn-success" href="{{ route("admin.customers.create") }}">
@@ -13,7 +13,7 @@
         You have reached maximum amount of {{ trans('cruds.customer.title') }}.
         Please <a href="{{ route('admin.billing.index') }}">upgrade your plan</a>.
     </div>
-@endcan
+@endcannot
 <div class="card">
     <div class="card-header">
         {{ trans('cruds.customer.title_singular') }} {{ trans('global.list') }}
