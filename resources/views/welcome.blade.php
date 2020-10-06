@@ -22,9 +22,9 @@
     <link href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css' rel='stylesheet' type='text/css'>
 
     <!-- CSS -->
-    <link href="{{ asset('css/spark.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/landingpage.css') }}" rel="stylesheet">
+    <link href="https://customerce.herokuapp.com/public/css/spark.css" rel="stylesheet">
+    <link href="https://customerce.herokuapp.com/public/css/app.css" rel="stylesheet">
+    <link href="https://customerce.herokuapp.com/public/css/landingpage.css" rel="stylesheet">
 </head>
 <body class="border-thick">
 
@@ -40,11 +40,11 @@
                 @endif
             </ul>
             <div class="jumbo text-center">
-                <img style="height: 70px;" src="/img/logo.svg" alt="Customerce">
+                <img style="height: 70px;" src="public/img/logo.svg" alt="Customerce">
                 <h1 class="hero-text">Manage your business with Customerce <br/> Get up and running in 30 seconds</h1>
             </div><!-- /.jumbo -->
 
-            <img class="img-responsive center-block" src="/img/webUI.png" alt="">
+            <img class="img-responsive center-block" src="public/img/webUI.png" alt="">
         </div><!-- /.col-md-12 -->
     </div><!-- /.row -->
 </div><!-- /.container-fluid -->
