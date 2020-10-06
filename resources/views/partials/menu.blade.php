@@ -72,15 +72,41 @@
                 </a>
             </li>
             <hr>
-                <li class="nav-item">
-                    <a href="{{ route("admin.invoices.index") }}"
-                       class="nav-link {{ request()->is('admin/invoices') || request()->is('admin/invoices/*') ? 'active' : '' }}">
-                        <i class="fa-fw fa fa-cogs nav-icon">
+            <li class="nav-item">
+                <a href="{{ route("admin.clients.index") }}" class="nav-link {{ request()->is('admin/clients') || request()->is('admin/clients/*') ? 'active' : '' }}">
+                    <i class="fa-fw fa fa-cogs nav-icon">
 
-                        </i>
-                        {{ trans('cruds.invoice.title') }}
-                    </a>
-                </li>
+                    </i>
+                    {{ trans('cruds.clients.title') }}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route("admin.products.index") }}" class="nav-link {{ request()->is('admin/products') || request()->is('admin/products/*') ? 'active' : '' }}">
+                    <i class="fa-fw fa fa-cogs nav-icon">
+
+                    </i>
+                    {{ trans('cruds.products.title') }}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route("admin.invoices.index") }}"
+                   class="nav-link {{ request()->is('admin/invoices') || request()->is('admin/invoices/*') ? 'active' : '' }}">
+                    <i class="fa-fw fa fa-cogs nav-icon">
+
+                    </i>
+                    {{ trans('cruds.invoice.title') }}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route("admin.payments.index") }}" class="nav-link {{ request()->is('admin/payments') || request()->is('admin/payments/*') ? 'active' : '' }}">
+                    <i class="fa-fw fa fa-cogs nav-icon">
+
+                    </i>
+                    {{ trans('cruds.payments.title') }}
+                </a>
+            </li>
+
+            <hr>
             <li class="nav-item">
             <a href="{{ route("incomes.index") }}"
                class="nav-link {{ request()->is('admin/income') || request()->is('admin/income/*') ? 'active' : '' }}">
@@ -108,6 +134,7 @@
                     {{ trans('cruds.notes.title') }}
                 </a>
             </li>
+            <hr>
 {{--
             <li class="nav-item {{ Route::currentRouteName() == 'incomes.index' ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('incomes.index') }}">
@@ -123,7 +150,7 @@
                 <a class="nav-link" href="{{ route('notes.index') }}">
                     <i class="fas fa-fw fa-sticky-note"></i>
                 {{ trans('cruds.notes.title') }}
-            </li>--}}
+            </li>
 
                 <li class="nav-item">
                     <a href="{{ route("admin.customers.index") }}" class="nav-link {{ request()->is('admin/customers') || request()->is('admin/customers/*') ? 'active' : '' }}">
@@ -142,7 +169,7 @@
                         {{ trans('global.billing.menu') }}
                     </a>
                 </li>
-            @endif
+            @endif--}}
             @if(file_exists(app_path('Http/Controllers/Auth/ChangePasswordController.php')))
                 @can('profile_password_edit')
                     <li class="nav-item">

@@ -1,59 +1,43 @@
 @extends('layouts.admin')
+
 @section('content')
 
-<div class="card">
-    <div class="card-header">
-        {{ trans('global.create') }} {{ trans('cruds.invoice.title_singular') }}
+    <form method="POST" action="{{route('admin.invoices.store')}}">
+    <div class="container">
+        <h1>Create Invoice</h1>
+        <div class="row" style="padding-top: 10px">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">Invoice Information</div>
+
+                    <div class="card-body justify-content-center">
+                            @csrf
+                            Client:
+                        <select class="form-control" id="client_id" name="client_id" <?php if (app('request')->input('client_id')) echo ' hidden'; ?>>
+                            @forelse(App\Client::all() as $client)
+                               <option value="{{$client->id}}" <?php if (app('request')->input('client_id') == $client->id) echo ' selected="selected"'; ?>>{{$client->first_name}} {{$client->last_name}}</option>
+                               @empty
+                            @endforelse
+                        </select>
+                            Invoice Number:
+                            <input type="text" name="invoice_number" value="0000{{$client->invoices->count()+1}}" class="form-control"/>
+                            Invoice Date:
+                            <input type="date" name="invoice_date" value="{{ date('Y-m-d') }}" class="form-control"/>
+                            Due Date:
+                            <input type="date" name="due_date" class="form-control"/>
+                            <input type="text" name="discount" class="form-control" hidden/>
+                        <select class="form-control" id="discount_type" name="discount_type" hidden>
+                      <option value="Amount">Amount</option>
+                            <option value="Percent">Percent</option>
+                        </select>
+                            Private Notes:
+                            <textarea name="private_notes" class="form-control"></textarea>
+                        <br>
+                        <input type="submit" value="Save" class="btn btn-primary">
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <div class="card-body">
-        <form method="POST" action="{{ route("admin.invoices.store") }}" enctype="multipart/form-data">
-            @csrf
-            <div class="form-group">
-                <label class="required" for="customer_id">{{ trans('cruds.invoice.fields.customer_name') }}</label>
-                <select class="form-control select2 {{ $errors->has('customer_id') ? 'is-invalid' : '' }}" name="customer_id" id="customer_id" >
-                    @foreach($customers as $customer)
-                        <option value="{{ $customer->id }}" {{ old('customer_id') == $customer->id ? 'selected' : '' }}>{{ $customer->name }}</option>
-                    @endforeach
-                </select>
-                @if($errors->has('customer_id'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('customer_id') }}
-                    </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.invoice.fields.customer_name_helper') }}</span>
-            </div>
-
-            <div class="form-group">
-                <label class="required" for="invoice_date">{{ trans('cruds.invoice.fields.invoice_date') }}</label>
-                <input class="form-control date {{ $errors->has('invoice_date') ? 'is-invalid' : '' }}" type="text" name="invoice_date" id="invoice_date" value="{{ old('invoice_date') }}" >
-                @if($errors->has('invoice_date'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('invoice_date') }}
-                    </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.invoice.fields.invoice_date_helper') }}</span>
-            </div>
-
-            <div class="form-group">
-                <label class="required" for="invoice_amount">{{ trans('cruds.invoice.fields.invoice_amount') }}</label>
-                <input class="form-control {{ $errors->has('invoice_amount') ? 'is-invalid' : '' }}" type="text" name="invoice_amount" id="invoice_amount" value="{{ old('invoice_amount', '') }}" >
-                @if($errors->has('invoice_amount'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('invoice_amount') }}
-                    </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.invoice.fields.invoice_amount_helper') }}</span>
-            </div>
-            <div class="form-group">
-                <button class="btn btn-danger" type="submit">
-                    {{ trans('global.save') }}
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
-
-
-
+    </form>
 @endsection

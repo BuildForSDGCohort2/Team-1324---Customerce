@@ -6,20 +6,20 @@ use Illuminate\Database\Eloquent\Model;
 
 class Payment extends Model
 {
-    protected $fillable = ['user_id', 'plan_id', 'paid_amount', 'original_amount', 'discount_id'];
+    protected $fillable = ['client_id',
+        'invoice_id', 'payment_amount',
+        'payment_type', 'payment_date', 'transaction_reference',
+        'private_notes', 'status'
+    ];
 
-    public function user()
+    public function invoice()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo('App\Invoice');
+
     }
-
-    public function plan()
+    public function client()
     {
-        return $this->belongsTo(Role::class, 'plan_id', 'id');
-    }
+        return $this->belongsTo('App\Client');
 
-    public function getAmountAttribute()
-    {
-        return config('saas.currency') . number_format($this->paid_amount / 100, 2);
     }
 }

@@ -78,6 +78,28 @@
                         </ul>
                     </div>
                 @endif
+                    {{--<div class="row">
+                        <div class="col-xl-6 offset-xl-3 col-sm-12 mb-3">
+                            <ul class="list-group">
+                                <li class="list-group-item bg-info text-center text-white">
+                                    <span>This Month Cost</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Total Income
+                                    <span class="badge badge-primary badge-pill incomeValue">{{ $incomes ?? '' }}</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Total Expense
+                                    <span class="badge badge-danger badge-pill expenseValue">{{ $expenses ?? ''  }}</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Balance
+                                    <span class="badge badge-primary badge-pill">{{ $balance ?? ''  }}</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                    </div>--}}
                 @yield('content')
 
             </div>

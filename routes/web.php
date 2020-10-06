@@ -22,21 +22,6 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::delete('countries/destroy', 'CountriesController@massDestroy')->name('countries.massDestroy');
     Route::resource('countries', 'CountriesController');
 
-    // Invoices
-    Route::delete('invoices/destroy', 'InvoicesController@massDestroy')->name('invoices.massDestroy');
-    Route::resource('invoices', 'InvoicesController');
-
-    // Customers
-    Route::delete('customers/destroy', 'CustomersController@massDestroy')->name('customers.massDestroy');
-    Route::resource('customers', 'CustomersController');
-
-    Route::get('billing', 'BillingController@index')->name('billing.index');
-    Route::post('billing/checkout', 'BillingController@checkout')->name('billing.checkout');
-    Route::post('billing/check-discount', 'BillingController@checkDiscount')->name('billing.checkDiscount');
-    Route::get('cancel', 'BillingController@cancel')->name('billing.cancel');
-    Route::get('resume', 'BillingController@resume')->name('billing.resume');
-    Route::get('payment_methods/default/{paymentMethod}', 'PaymentMethodController@markDefault')->name('payment_methods.default');
-    Route::resource('payment_methods', 'PaymentMethodController');
 });
 Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 'middleware' => ['auth']], function () {
 // Change password
@@ -87,3 +72,28 @@ Route::get('/expense/delete/{id}', 'Admin\ExpenseController@destroy')->name('exp
 
 //POS
 Route::get('/pos', 'Admin\POSController@index')->name('pos.index');
+Route::get('sales', function () {
+    return view('admin.sales.index');
+})->name('sales.index');
+
+Route::prefix('admin')->name('admin.')->group(function (){
+    Route::resource('profile', 'Admin\ProfileController');
+});
+Route::prefix('admin')->name('admin.')->group(function (){
+    Route::resource('clients', 'Admin\ClientController');
+});
+Route::prefix('admin')->name('admin.')->group(function (){
+    Route::resource('payments', 'Admin\PaymentController');
+});
+Route::prefix('admin')->name('admin.')->group(function (){
+    Route::resource('invoices', 'Admin\InvoiceController');
+    Route::get('invoices/{id}/generate-pdf','Admin\InvoiceController@generatePDF')->name('invoices.generate-pdf');
+
+});
+Route::prefix('admin')->name('admin.')->group(function (){
+    Route::resource('products', 'Admin\ProductController');
+});
+
+Route::get('/admin/invoice/preview', 'Admin\ProfileController@previewInvoice');
+Route::get('/admin/invoice/mobile/preview/{id}', 'Admin\InvoiceController@mobilePreview');
+

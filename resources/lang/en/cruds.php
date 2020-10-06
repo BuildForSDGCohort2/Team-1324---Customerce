@@ -111,6 +111,18 @@ return [
             'name_helper'       => '',
         ],
     ],
+    'clients'        => [
+        'title'          => 'Clients',
+        'title_singular' => 'Client',
+    ],
+    'products'        => [
+        'title'          => 'Products',
+        'title_singular' => 'Product',
+    ],
+    'payments'        => [
+        'title'          => 'Payments',
+        'title_singular' => 'Payment',
+    ],
     'pos'        => [
         'title'          => 'POS',
         'title_singular' => 'POS',

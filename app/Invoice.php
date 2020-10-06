@@ -3,31 +3,30 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
-/**
- * Class Invoice
- * @package App
- */
 class Invoice extends Model
 {
-    use SoftDeletes;
-
-    /**
-     * @var array
-     */
-    protected $fillable = [
-        'customer_id',
-        'invoice_date',
-        'invoice_amount',
+    //
+    protected $fillable = ['client_id',
+        'invoice_number', 'invoice_date',
+        'po_number', 'amount', 'balance',
+        'due_date',  'deposit_amount','discount',
+        'discount_type','private_notes','status','users_id'
     ];
 
-    /**
-     * @return BelongsTo
-     */
-    public function customer()
+    public function client()
     {
-        return $this->belongsTo(Customer::class);
+        return $this->belongsTo('App\Client');
+
+    }
+    public function products()
+    {
+        return $this->hasMany('App\Product');
+
+    }
+    public function payments()
+    {
+        return $this->hasMany('App\Payment');
+
     }
 }

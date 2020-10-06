@@ -35,8 +35,8 @@
                 @if(Auth::user())
                     <li><a href="/home">Go to dashboard &rarr;</a></li>
                 @else
-                    <li><a href="/register">Sign up</a></li>
-                    <li><a href="/login">Log in</a></li>
+                    <li><a href="public/register">Sign up</a></li>
+                    <li><a href="public/login">Log in</a></li>
                 @endif
             </ul>
             <div class="jumbo text-center">
