@@ -11,6 +11,6 @@ class POSController
     public function index()
     {
         $products = Product::all();
-        return view('admin.pos.index');
+        return view('admin.pos.index', compact('products'));
     }
 }
