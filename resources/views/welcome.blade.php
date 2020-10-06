@@ -40,11 +40,11 @@
                 @endif
             </ul>
             <div class="jumbo text-center">
-                <img style="height: 70px;" src="public/img/logo.svg" alt="Customerce">
+                <img style="height: 70px;" src="img/logo.svg" alt="Customerce">
                 <h1 class="hero-text">Manage your business with Customerce <br/> Get up and running in 30 seconds</h1>
             </div><!-- /.jumbo -->
 
-            <img class="img-responsive center-block" src="public/img/webUI.png" alt="">
+            <img class="img-responsive center-block" src="img/webUI.png" alt="">
         </div><!-- /.col-md-12 -->
     </div><!-- /.row -->
 </div><!-- /.container-fluid -->
