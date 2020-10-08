@@ -50,10 +50,20 @@
                                 <table class="table table-striped">
                                     <tr>
                                         <td>
-                                            Customer Name: <input type="text" class="form-control" name="name" value="{{ old('name') }}">
+                                            Client Name:
+
+                                            @if(empty($clients))
+                                                <input type="text" class="form-control" name="clients" value="{{ old('clients') }}">
+                                            @else
+                                                <select class="form-control client_id" name="client_id[]">
+                                                @foreach($clients as $client)
+                                                    <option data-name="{!! $client ->address_city !!}" value="{!! $client->id !!}">{!! $client->first_name!!}</option>
+                                                @endforeach
+                                                </select>
+                                             @endif
                                         </td>
                                         <td>
-                                            Location: <input type="text" class="form-control" name="location" value="{{ old('location') }}">
+                                            Location: <input type="text" class="form-control" name="location" value="{!! $client ->address_city !!}">
                                         </td>
                                     </tr>
                                 </table>
@@ -77,7 +87,7 @@
                                         <td>
                                             <select class="form-control product_id" name="product_id[]">
                                                 @foreach($products as $product)
-                                                    <option data-price="{!! $product ->unit_cost !!}" value="{!! $product->invoice_number !!}">{!! $product->item_name!!}</option>
+                                                    <option data-price="{!! $product ->unit_cost !!}" value="{!! $product->id !!}">{!! $product->item_name!!}</option>
                                                 @endforeach
                                             </select>
                                         </td>

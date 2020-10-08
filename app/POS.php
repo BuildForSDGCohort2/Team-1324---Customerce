@@ -20,4 +20,9 @@ class POS extends Model
         return $this->hasMany('App\Product');
 
     }
+    public function clients()
+    {
+        return $this->hasMany('App\Client');
+
+    }
 }
