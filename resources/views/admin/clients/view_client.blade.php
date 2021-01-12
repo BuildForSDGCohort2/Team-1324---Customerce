@@ -18,8 +18,8 @@
                         {{$client->address_street2}}<br>
                         {{$client->address_city}}, {{$client->address_state}}, {{$client->address_zipcode}}
                         <h2>Standings</h2>
-                        Paid to Date: ${{number_format($client->payments->sum('payment_amount'), 2)}}<br>
-                        Balance: ${{number_format($client->invoices->sum('balance'), 2)}}
+                        Paid to Date: Ksh{{number_format($client->payments->sum('payment_amount'), 2)}}<br>
+                        Balance: Ksh{{number_format($client->invoices->sum('balance'), 2)}}
                     </div>
                 </div>
             </div>
@@ -44,8 +44,8 @@
                                 <tr>
                                     <td>{{$invoice->invoice_number}}</td>
                                     <td>{{$invoice->client->first_name}} {{$invoice->client->last_name}}</td>
-                                    <td>${{number_format($invoice->amount, 2)}}</td>
-                                    <td>${{number_format($invoice->balance, 2)}}</td>
+                                    <td>Ksh{{number_format($invoice->amount, 2)}}</td>
+                                    <td>Ksh{{number_format($invoice->balance, 2)}}</td>
                                     <td>{{$invoice->due_date}}</td>
                                     <td>{{$invoice->status}}</td>
                                     <td><a href="{{ route('admin.invoices.show', $invoice->id) }}" target="_blank" class="btn btn-sm btn-warning">View Invoice</a>

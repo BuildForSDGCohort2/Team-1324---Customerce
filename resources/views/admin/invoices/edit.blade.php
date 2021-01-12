@@ -78,9 +78,9 @@
                                         <td>{{$product->invoice->invoice_number}}</td>
                                         <td>{{$product->item_name}}</td>
                                         <td>{{$product->item_description}}</td>
-                                        <td>${{number_format($product->unit_cost, 2)}}</td>
+                                        <td>Ksh{{number_format($product->unit_cost, 2)}}</td>
                                         <td>x{{$product->quantity}}</td>
-                                        <td>${{number_format($product->line_total, 2)}}</td>
+                                        <td>Ksh{{number_format($product->line_total, 2)}}</td>
                                         <td>
                                             <a href="{{ route('admin.products.edit', $product->id) }}" class="btn btn-sm btn-info">Edit</a>
                                             <form method="POST" action="{{route('admin.products.destroy', $product->id)}}">
@@ -114,8 +114,8 @@
                                         <strong>Balance:</strong>
                                     </td>
                                     <td style="font-size: medium">
-                                        ${{number_format($invoice->amount, 2)}} <br>
-                                        <strong>${{number_format($invoice->balance, 2)}}</strong></td>
+                                        Ksh{{number_format($invoice->amount, 2)}} <br>
+                                        <strong>Ksh{{number_format($invoice->balance, 2)}}</strong></td>
                                 </tr>
                             </table>
                     </div>

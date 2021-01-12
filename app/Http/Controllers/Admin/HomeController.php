@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Expense;
+use App\Income;
 use App\Payment;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 use LaravelDaily\LaravelCharts\Classes\LaravelChart;
 
 class HomeController
@@ -57,8 +61,13 @@ class HomeController
                 ->take($paymentsTable['entries_number'])
                 ->get();
         }
+        $data['incomes'] = Income::where('user_id', Auth::User()->id)->whereYear('income_date', Carbon::now()->year)->whereMonth('income_date', Carbon::now()->month)->sum('income_amount');
+        $data['expenses'] = Expense::where('user_id', Auth::User()->id)->whereYear('expense_date', Carbon::now()->year)->whereMonth('expense_date', Carbon::now()->month)->sum('expense_amount');
+        $data['balance'] = $data['incomes'] - $data['expenses'];
 
-        return view('home', compact('revenueChart', 'paymentsTable'));
+        return view('home',$data (compact('revenueChart', 'paymentsTable')));
+
+
     }
 
 }

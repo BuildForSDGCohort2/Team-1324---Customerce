@@ -29,7 +29,7 @@
                                     <td>{{$client->first_name}} {{$client->last_name}}</td>
                                     <td>{{$client->email_address}}</td>
                                     <td>{{$client->created_at->format('m-d-y')}}</td>
-                                    <td>${{number_format($client->invoices->sum('balance'), 2)}}</td>
+                                    <td>Ksh{{number_format($client->invoices->sum('balance'), 2)}}</td>
                                     <td> <a href="{{ route('admin.clients.show', $client->id) }}" class="btn btn-sm btn-primary">View</a>
                                     </td>
                                 </tr>

@@ -144,7 +144,7 @@
                                 Invoice #: {{$invoice->invoice_number}}<br>
                                 <?php if ($invoice->invoice_date ==! null) echo "Created: ". date("F d, Y", strtotime($invoice->invoice_date)) . "<br>";?>
                                 <?php if ($invoice->due_date ==! null) echo "Due: ". date("F d, Y", strtotime($invoice->due_date)) . "<br>";?>
-                                Balance Due: ${{number_format($invoice->balance, 2)}}<br>
+                                Balance Due: Ksh{{number_format($invoice->balance, 2)}}<br>
                                 <?php if ($invoice->deposit_amount > 0 && $invoice->payments->sum('payment_amount') < $invoice->deposit_amount)echo "Partial Due: $". number_format($invoice->deposit_amount, 2);?>
                             </td>
                         </tr>
@@ -207,14 +207,14 @@
                             {{$product->item_description}}
                         </td>
                         <td>
-                            ${{number_format($product->unit_cost, 2)}}
+                            Ksh{{number_format($product->unit_cost, 2)}}
                         </td>
                         <td>
                             x{{$product->quantity}}
                         </td>
 
                         <td>
-                            ${{number_format($product->unit_cost * $product->quantity,2) }}
+                            Ksh{{number_format($product->unit_cost * $product->quantity,2) }}
                         </td>
                     </tr>
                 @else
@@ -226,14 +226,14 @@
                             {{$product->item_description}}
                         </td>
                         <td>
-                            ${{number_format($product->unit_cost,2)}}
+                            Ksh{{number_format($product->unit_cost,2)}}
                         </td>
                         <td>
                             x{{$product->quantity}}
                         </td>
 
                         <td>
-                            ${{number_format($product->unit_cost * $product->quantity, 2)}}
+                            Ksh{{number_format($product->unit_cost * $product->quantity, 2)}}
                         </td>
                     </tr>
                 @endif
@@ -251,12 +251,12 @@
                     <?php if ($invoice->deposit_amount > 0 && $invoice->payments->sum('payment_amount') < $invoice->deposit_amount) echo"<strong>Partial Due</strong>";?>
                 </td>
                 <td style="text-align: right">
-                    ${{number_format($invoice->products->sum('line_total'),2)}}<br>
+                    Ksh{{number_format($invoice->products->sum('line_total'),2)}}<br>
                     <?php if ($invoice->client->tax_rate >0) echo "$" . number_format($invoice->products->sum('line_total')  * ((100+$invoice->client->tax_rate) / 100)-$invoice->products->sum('line_total'), 2) . "<br>";?>
                     <?php if ($invoice->discount > 0 && $invoice->discount_type  == 'Amount') echo "($" . number_format($invoice->discount, 2).")<br>"; ?>
                     <?php if ($invoice->discount > 0 && $invoice->discount_type  == 'Percent') echo "($".number_format($invoice->products->sum('line_total') * (($invoice->discount) / 100), 2).")<br>"; ?>
-                    (${{number_format($invoice->payments->sum('payment_amount'), 2)}})<br>
-                    ${{number_format($invoice->balance, 2)}}<br>
+                    (Ksh{{number_format($invoice->payments->sum('payment_amount'), 2)}})<br>
+                    Ksh{{number_format($invoice->balance, 2)}}<br>
                     <?php if ($invoice->deposit_amount > 0 && $invoice->payments->sum('payment_amount') < $invoice->deposit_amount) echo "$". number_format($invoice->deposit_amount, 2);?>
                 </td>
             </tr>

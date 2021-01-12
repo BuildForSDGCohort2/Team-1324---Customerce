@@ -28,8 +28,8 @@
                                 <tr>
                                     <td>{{$invoice->invoice_number}}</td>
                                     <td>{{$invoice->client->first_name}} {{$invoice->client->last_name}}</td>
-                                    <td>${{number_format($invoice->amount, 2)}}</td>
-                                    <td>${{number_format($invoice->balance, 2)}}</td>
+                                    <td>Ksh{{number_format($invoice->amount, 2)}}</td>
+                                    <td>Ksh{{number_format($invoice->balance, 2)}}</td>
                                     <td>  <?php if ($invoice->due_date ==! null) echo date("F d, Y", strtotime($invoice->due_date));?></td>
                                     <td><span class="label label-success">{{$invoice->status}}</span></td>
                                     <td> <a href="{{ route('admin.invoices.edit', $invoice->id) }}" class="btn btn-sm btn-primary">View</a>

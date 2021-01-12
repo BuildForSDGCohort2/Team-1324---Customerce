@@ -63,7 +63,8 @@
                                              @endif
                                         </td>
                                         <td>
-                                            Location: <input type="text" class="form-control" name="location" value="{!! $client ->address_city !!}">
+{{--                                            Location: <input type="text" class="form-control" name="location" value="{!! $client ->address_city !!}">--}}
+                                            Location: <input type="text" class="form-control" name="location" value="">
                                         </td>
                                     </tr>
                                 </table>

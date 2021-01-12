@@ -31,7 +31,7 @@
                                     <td>{{$payment->transaction_reference}}</td>
                                     <td><em>Manual Entry</em></td>
                                     <td>{{$payment->payment_type}}</td>
-                                    <td>${{number_format($payment->payment_amount,2)}}</td>
+                                    <td>Ksh{{number_format($payment->payment_amount,2)}}</td>
                                     <td> <?php if ($payment->payment_date ==! null) echo date("F d, Y", strtotime($payment->payment_date));?></td>
                                     <td>{{$payment->status}}</td>
                                     <td> <a href="{{ route('admin.payments.edit', $payment->id) }}" class="btn btn-sm btn-primary">Edit</a>

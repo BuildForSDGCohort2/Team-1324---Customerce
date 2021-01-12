@@ -25,4 +25,13 @@ class POS extends Model
         return $this->hasMany('App\Client');
 
     }
+    public function incomes()
+    {
+        return $this->hasMany('App\Income');
+
+    }
+    public function User()
+    {
+        return $this->hasOne('App\User', 'user_id', 'id');
+    }
 }

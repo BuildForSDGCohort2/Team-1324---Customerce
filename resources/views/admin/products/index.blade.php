@@ -27,7 +27,7 @@
                                 <td>{{$product->invoice->invoice_number}}</td>
                                     <td>{{$product->item_name}}</td>
                                     <td>{{$product->item_description}}</td>
-                                    <td>${{number_format($product->unit_cost, 2)}}</td>
+                                    <td>Ksh{{number_format($product->unit_cost, 2)}}</td>
                                     <td> <a href="{{ route('admin.products.edit', $product->id) }}" class="btn btn-sm btn-warning">Edit</a>
                                     </td>
                                 </tr>

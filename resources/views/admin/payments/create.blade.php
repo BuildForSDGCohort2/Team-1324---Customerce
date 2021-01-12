@@ -15,7 +15,7 @@
                             Invoice:
                             <select class="form-control" id="invoice_id" name="invoice_id">
                                 @forelse(App\Invoice::all() as $invoice)
-                                    <option value="{{$invoice->id}}"> {{$invoice->client->business_name}}- {{$invoice->invoice_number}} - {{$invoice->client->first_name}} {{$invoice->client->last_name}} - ${{number_format($invoice->balance, 2)}} | ${{number_format($invoice->amount, 2)}} </option>
+                                    <option value="{{$invoice->id}}"> {{$invoice->client->business_name}}- {{$invoice->invoice_number}} - {{$invoice->client->first_name}} {{$invoice->client->last_name}} - Ksh{{number_format($invoice->balance, 2)}} | Ksh{{number_format($invoice->amount, 2)}} </option>
                                 @empty
                                 @endforelse
                             </select>
